@@ -1,6 +1,6 @@
-<div align="center">
-    # Juno
-</div>
+<h1 align="center">
+     Juno
+</h1>
 
 ## Introduccion
 Juno es un proyecto orientado a la gestion de escuelas infatiles privadas, permitiendo la gestion de:
