@@ -1,4 +1,4 @@
-package com.gabriel.juno.domain.models;
+package com.gabriel.juno.domain.models.centro;
 
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
 
@@ -6,8 +6,7 @@ import java.time.LocalDateTime;
 
 /**
  * @params {}
- * @params { nombre, email, fundacion }
- * @param { id, nombre, email, fundacion }
+ * @PARAMS Builder
  *
  * Modelo que representa el Centro en el dominio.
  */
@@ -21,19 +20,6 @@ public class Centro {
     public Centro() {}
 
     /* Constructor sin id */
-    public Centro(String nombre, String email, LocalDateTime fundacion) {
-        this.nombre = nombre;
-        this.email = email;
-        this.fundacion = fundacion;
-    }
-
-    /* Constructor completo */
-    public Centro(Long id, String nombre, String email, LocalDateTime fundacion) {
-        this.id = id;
-        this.nombre = nombre;
-        this.email = email;
-        this.fundacion = fundacion;
-    }
 
     /* Constructor del Builder */
     private Centro(builder builder) {

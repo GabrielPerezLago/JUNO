@@ -1,4 +1,4 @@
-package com.gabriel.juno.domain.exceptions.centros;
+package com.gabriel.juno.domain.exceptions.centro;
 
 public class CentroJunoException extends RuntimeException {
     public CentroJunoException(String message) {

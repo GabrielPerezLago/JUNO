@@ -1,15 +1,15 @@
 package com.gabriel.juno.application.centro.usecase;
 
-import com.gabriel.juno.domain.models.Centro;
-import com.gabriel.juno.domain.port.CentroRepository;
+import com.gabriel.juno.domain.models.centro.Centro;
+import com.gabriel.juno.domain.port.centro.CentroRepositoryPort;
 
 
 import java.util.List;
 
 public class CentroService {
-    private final CentroRepository repository;
+    private final CentroRepositoryPort repository;
 
-    public CentroService(CentroRepository repo) {
+    public CentroService(CentroRepositoryPort repo) {
         this.repository = repo;
     }
 
