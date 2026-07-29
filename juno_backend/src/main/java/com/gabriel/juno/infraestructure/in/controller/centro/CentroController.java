@@ -1,4 +1,4 @@
-package com.gabriel.juno.infraestructure.centro.in.controller;
+package com.gabriel.juno.infraestructure.in.controller.centro;
 
 import com.gabriel.juno.application.centro.usecase.CentroService;
 import com.gabriel.juno.domain.models.centro.Centro;

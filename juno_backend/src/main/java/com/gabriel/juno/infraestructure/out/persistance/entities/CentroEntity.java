@@ -1,4 +1,4 @@
-package com.gabriel.juno.infraestructure.centro.out.entity;
+package com.gabriel.juno.infraestructure.out.persistance.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,8 +1,8 @@
-package com.gabriel.juno.infraestructure.centro.out.adapter;
+package com.gabriel.juno.infraestructure.out.adapter.centro;
 
 import com.gabriel.juno.domain.models.centro.Centro;
 import com.gabriel.juno.domain.port.centro.CentroRepositoryPort;
-import com.gabriel.juno.infraestructure.centro.out.persistance.repository.CentroJpaRepository;
+import com.gabriel.juno.infraestructure.out.persistance.repositories.centro.CentroJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
