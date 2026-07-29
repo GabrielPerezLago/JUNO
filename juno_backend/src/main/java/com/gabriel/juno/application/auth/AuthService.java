@@ -1,10 +1,8 @@
 package com.gabriel.juno.application.auth;
 
-import com.gabriel.juno.domain.models.auth.AuthModelEntity;
-import com.gabriel.juno.domain.models.empleados.EmpleadoDTO;
-import com.gabriel.juno.domain.models.usuario.Usuario;
+import com.gabriel.juno.domain.models.auth.;
 
 public interface AuthService {
-    public AuthModelEntity signin();
-    public AuthModelEntity signup();
+    public AuthModel signin();
+    public AuthModel signup();
 }

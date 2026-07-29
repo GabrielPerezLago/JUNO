@@ -6,6 +6,8 @@ import com.gabriel.juno.domain.models.empleados.utils.Estado;
 import com.gabriel.juno.domain.models.empleados.utils.Rol;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
 
+import java.time.*;
+
 
 /* DOCUMENTAR */
 public class EmpleadoDTO extends EmpleadoImplement {
@@ -14,6 +16,7 @@ public class EmpleadoDTO extends EmpleadoImplement {
     private String apellidos;
     private String dni;
     private String email;
+    private LocalDateTime nacimeinto;
     private String telefono;
     private Estado estado;
     private Rol rol;
@@ -28,12 +31,100 @@ public class EmpleadoDTO extends EmpleadoImplement {
         this.dni = builder.dni;
         this.email = builder.email;
         this.telefono = builder.telefono;
+        this.nacimeinto = builder.nacimiento;
         this.estado = builder.estado;
         this.rol = builder.rol;
         this.idCentro = builder.idCentro;
         this.idAula = builder.idAula;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public Long getIdAula() {
+        return idAula;
+    }
+
+    public void setIdAula(Long idAula) {
+        this.idAula = idAula;
+    }
+
+    public Long getIdCentro() {
+        return idCentro;
+    }
+
+    public void setIdCentro(Long idCentro) {
+        this.idCentro = idCentro;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
+    public LocalDateTime getNacimeinto() {
+        return nacimeinto;
+    }
+
+    public void setNacimeinto(LocalDateTime nacimeinto) {
+        this.nacimeinto = nacimeinto;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     /* TEMINAR */
     @Override
@@ -51,6 +142,7 @@ public class EmpleadoDTO extends EmpleadoImplement {
         private String dni;
         private String email;
         private String telefono;
+        private LocalDateTime nacimiento;
         private Estado estado;
         private Rol rol;
         private Long idCentro;
@@ -85,6 +177,11 @@ public class EmpleadoDTO extends EmpleadoImplement {
 
         public builder telefono(String telefono) {
             this.telefono = telefono;
+            return this;
+        }
+
+        public builder nacimiento(LocalDateTime nacimiento) {
+            this.nacimiento = nacimiento;
             return this;
         }
 

@@ -2,6 +2,8 @@ package com.gabriel.juno.domain.models.usuario;
 
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
 
+import java.time.LocalDateTime;
+
 public class Usuario {
     private Long id;
     private String nombre;
@@ -10,6 +12,7 @@ public class Usuario {
     private String email;
     private String password;
     private String telefono;
+    public LocalDateTime nacimiento;
 
     public Usuario(){}
     public Usuario(builder build) {
@@ -20,6 +23,7 @@ public class Usuario {
         this.email = build.email;
         this.password = build.password;
         this.telefono = build.telefono;
+        this.nacimiento = build.nacimiento;
     }
 
     public Long getId() {
@@ -78,6 +82,14 @@ public class Usuario {
         this.telefono = telefono;
     }
 
+    public LocalDateTime getNacimiento() {
+        return nacimiento;
+    }
+
+    public void setNacimiento(LocalDateTime nacimiento) {
+        this.nacimiento = nacimiento;
+    }
+
     public class builder implements BuilderModelBase<Usuario> {
         private Long id;
         private String nombre;
@@ -86,6 +98,7 @@ public class Usuario {
         private String email;
         private String password;
         private String telefono;
+        private LocalDateTime nacimiento;
 
 
         public builder id(Long id) {
@@ -120,6 +133,11 @@ public class Usuario {
 
         public builder telefono(String telefono) {
             this.telefono = telefono;
+            return this;
+        }
+
+        public builder nacimiento(LocalDateTime nacimiento) {
+            this.nacimiento = nacimiento;
             return this;
         }
 
