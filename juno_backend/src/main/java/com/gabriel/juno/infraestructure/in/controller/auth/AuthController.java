@@ -14,8 +14,8 @@ public class AuthController {
     private final AuthService service;
 
     @PostMapping("/signin")
-    public AuthModel signIn(String email, String password) {
-        return service.signin(email, password);
+    public AuthModel signIn(String email, String password, String type) {
+        return service.signin(email, password, type);
     }
 
 }

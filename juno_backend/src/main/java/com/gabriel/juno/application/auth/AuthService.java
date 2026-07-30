@@ -11,7 +11,7 @@ public class AuthService {
         this.authPort = authPort;
     }
 
-    public AuthModel signin(String email, String password) {
-        return authPort.login(email, password);
+    public AuthModel signin(String email, String password, String type) {
+        return authPort.login(email, password, type);
     }
 }
