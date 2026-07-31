@@ -48,6 +48,10 @@
         <!--
             ** ** DEPENDECIAS INSERTADAS POR @Gabriel ** **
         -->
+
+        <!--
+            ** Driver de PostgreSQL
+        -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

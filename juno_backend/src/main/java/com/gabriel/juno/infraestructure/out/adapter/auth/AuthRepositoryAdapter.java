@@ -5,16 +5,18 @@ import com.gabriel.juno.domain.port.auth.AuthRepositoryPort;
 import com.gabriel.juno.infraestructure.out.persistance.repositories.empleado.EmpleadoJpaRepository;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
 public class AuthRepositoryAdapter implements AuthRepositoryPort {
     private final EmpleadoJpaRepository empleadoRepo;
+    private final PasswordEncoder encoder;
 
 
     @Override
-    public AuthModel login(String email, String password) {
+    public AuthModel login(String email, String password, String type) {
         return null;
     }
 }
