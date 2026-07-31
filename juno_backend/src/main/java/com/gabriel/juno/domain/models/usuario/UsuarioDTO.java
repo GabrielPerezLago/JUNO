@@ -4,27 +4,25 @@ import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
 
 import java.time.LocalDateTime;
 
-public record Usuario(
+public record UsuarioDTO(
         Long id,
         String nombre,
         String apellidos,
         String dni,
         String email,
-        String password,
         String telefono,
         LocalDateTime nacimiento
 ) {
 
-    public class builder implements BuilderModelBase<Usuario> {
+    public class builder implements BuilderModelBase<UsuarioDTO> {
+
         private Long id;
         private String nombre;
         private String apellidos;
         private String dni;
         private String email;
-        private String password;
         private String telefono;
         private LocalDateTime nacimiento;
-
 
         public builder id(Long id) {
             this.id = id;
@@ -51,11 +49,6 @@ public record Usuario(
             return this;
         }
 
-        public builder password(String password) {
-            this.password = password;
-            return this;
-        }
-
         public builder telefono(String telefono) {
             this.telefono = telefono;
             return this;
@@ -67,14 +60,13 @@ public record Usuario(
         }
 
         @Override
-        public Usuario build() {
-            return new Usuario(
+        public UsuarioDTO build() {
+            return new UsuarioDTO(
                     this.id,
                     this.nombre,
                     this.apellidos,
                     this.dni,
                     this.email,
-                    this.password,
                     this.telefono,
                     this.nacimiento
             );
