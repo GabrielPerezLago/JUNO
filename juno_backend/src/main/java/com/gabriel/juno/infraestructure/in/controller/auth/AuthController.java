@@ -1,8 +1,10 @@
 package com.gabriel.juno.infraestructure.in.controller.auth;
 
-import com.gabriel.juno.application.auth.AuthService;
-import com.gabriel.juno.domain.models.auth.AuthModel;
+import com.gabriel.juno.application.auth.AuthServiceAdapter;
+import com.gabriel.juno.domain.models.auth.AuthReq;
+import com.gabriel.juno.domain.models.auth.AuthResMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,11 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/juno/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthService service;
+    private final AuthServiceAdapter service;
 
-    @PostMapping("/signin")
-    public AuthModel signIn(String email, String password, String type) {
-        return service.signin(email, password, type);
+    public ResponseEntity<AuthResMapper> signUp(AuthReq authReq) {
+        return ResponseEntity.status(200).body(service.singup(authReq));
     }
 
 }

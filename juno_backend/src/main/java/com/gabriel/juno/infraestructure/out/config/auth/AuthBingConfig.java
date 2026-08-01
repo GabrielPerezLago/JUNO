@@ -1,6 +1,6 @@
 package com.gabriel.juno.infraestructure.out.config.auth;
 
-import com.gabriel.juno.application.auth.AuthService;
+import com.gabriel.juno.application.auth.AuthServiceAdapter;
 import com.gabriel.juno.domain.port.auth.AuthRepositoryPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class AuthBingConfig {
 
     @Bean
-    public AuthService authService(AuthRepositoryPort authPort) {
-        return new AuthService(authPort);
+    public AuthServiceAdapter authService(AuthRepositoryPort authPort) {
+        return new AuthServiceAdapter(authPort);
     }
 }

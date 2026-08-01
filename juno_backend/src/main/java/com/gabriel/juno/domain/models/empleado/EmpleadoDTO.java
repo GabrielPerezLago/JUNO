@@ -1,21 +1,29 @@
-package com.gabriel.juno.domain.models.usuario;
+package com.gabriel.juno.domain.models.empleado;
+
 
 import com.gabriel.juno.domain.models.auth.AuthResMapper;
+import com.gabriel.juno.domain.models.empleado.utils.Estado;
+import com.gabriel.juno.domain.models.empleado.utils.Rol;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
 
 import java.time.LocalDateTime;
 
-public record UsuarioDTO(
+public record EmpleadoDTO(
         Long id,
         String nombre,
         String apellidos,
         String dni,
         String email,
         String telefono,
-        LocalDateTime nacimiento
+        LocalDateTime nacimiento,
+        Rol rol,
+        Estado estado,
+        Long idCentro,
+        Long idAula
+
 ) implements AuthResMapper {
 
-    public class builder implements BuilderModelBase<UsuarioDTO> {
+    public static class builder implements BuilderModelBase<EmpleadoDTO> {
 
         private Long id;
         private String nombre;
@@ -24,6 +32,11 @@ public record UsuarioDTO(
         private String email;
         private String telefono;
         private LocalDateTime nacimiento;
+        private Rol rol;
+        private Estado estado;
+        private Long idCentro;
+        private Long idAula;
+
 
         public builder id(Long id) {
             this.id = id;
@@ -60,17 +73,29 @@ public record UsuarioDTO(
             return this;
         }
 
+        public builder rol(Rol rol) {
+            this.rol = rol;
+            return this;
+        }
+
+        public builder idCentro(Long idCentro) {
+            this.idCentro = idCentro;
+            return this;
+        }
+
+        public builder estado(Estado estado) {
+            this.estado = estado;
+            return this;
+        }
+
+        public builder idAula(Long idAula) {
+            this.idAula = idAula;
+            return this;
+        }
+
         @Override
-        public UsuarioDTO build() {
-            return new UsuarioDTO(
-                    this.id,
-                    this.nombre,
-                    this.apellidos,
-                    this.dni,
-                    this.email,
-                    this.telefono,
-                    this.nacimiento
-            );
+        public EmpleadoDTO build() {
+            return new EmpleadoDTO(id, nombre, apellidos, dni, email, telefono, nacimiento, rol, estado, idCentro, idAula);
         }
     }
 

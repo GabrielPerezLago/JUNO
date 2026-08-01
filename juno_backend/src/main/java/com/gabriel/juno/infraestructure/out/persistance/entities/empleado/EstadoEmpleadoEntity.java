@@ -1,7 +1,7 @@
 package com.gabriel.juno.infraestructure.out.persistance.entities.empleado;
 
 
-import com.gabriel.juno.domain.models.empleados.utils.Estado;
+import com.gabriel.juno.domain.models.empleado.utils.Estado;
 import jakarta.persistence.*;
 import lombok.*;
 

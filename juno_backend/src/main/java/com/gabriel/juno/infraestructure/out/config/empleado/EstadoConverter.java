@@ -1,6 +1,6 @@
 package com.gabriel.juno.infraestructure.out.config.empleado;
 
-import com.gabriel.juno.domain.models.empleados.utils.Estado;
+import com.gabriel.juno.domain.models.empleado.utils.Estado;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

@@ -1,4 +1,4 @@
-package com.gabriel.juno.domain.models.empleados.exceptions;
+package com.gabriel.juno.domain.models.empleado.exceptions;
 
 public class EmpleadoIncorrectParamException extends RuntimeException {
     public EmpleadoIncorrectParamException(String message) {
