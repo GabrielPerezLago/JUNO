@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(schema = "juno", name = "token")
-public class Token {
+public class TokenEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

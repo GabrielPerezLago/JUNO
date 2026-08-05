@@ -2,6 +2,7 @@ package com.gabriel.juno.infraestructure.security.jwt;
 
 
 import com.gabriel.juno.domain.models.usuario.Usuario;
+import com.gabriel.juno.domain.models.usuario.UsuarioDTO;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -42,7 +43,6 @@ public class JunoJwtTokenService {
     public String generateToken(final Usuario usuario) {
         return tokenComposser(usuario, expiration);
     }
-
     /**
      * Metodo que genera un token de refresco
      * @param usuario
@@ -51,6 +51,8 @@ public class JunoJwtTokenService {
     public String genereateRefreshToken(final Usuario usuario) {
         return tokenComposser(usuario, refreshTokenExpiration);
     }
+
+
 
     /**
      * @param usuario
@@ -71,6 +73,8 @@ public class JunoJwtTokenService {
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(signKeyGenerator())
                 .compact();
+
+
     }
 
     /**

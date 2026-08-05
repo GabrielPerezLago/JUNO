@@ -1,4 +1,4 @@
 package com.gabriel.juno.domain.models.auth;
 
-public interface AuthResMapper {
+public interface AuthResponseMapper {
 }

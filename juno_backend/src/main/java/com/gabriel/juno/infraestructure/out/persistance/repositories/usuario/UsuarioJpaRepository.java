@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.JpqlQueryBuilder;
 
+import java.util.Optional;
+
 public interface UsuarioJpaRepository extends JpaRepository<UsuarioEntity, Long> {
 
 

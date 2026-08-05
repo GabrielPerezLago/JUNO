@@ -1,42 +1,57 @@
 package com.gabriel.juno.domain.models.empleado;
 
-
-import com.gabriel.juno.domain.models.auth.AuthResMapper;
 import com.gabriel.juno.domain.models.empleado.utils.Estado;
 import com.gabriel.juno.domain.models.empleado.utils.Rol;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
 
 import java.time.LocalDateTime;
 
-public record EmpleadoDTO(
+/**
+ *
+ * @param id
+ * @param nombre
+ * @param apellidos
+ * @param dni
+ * @param email
+ * @param password
+ * @param telefono
+ * @param nacimiento
+ * @param rol
+ * @param estado
+ * @param idCentro
+ * @param idAula
+ *
+ * Empleado expecificamente diseñado para ser Utilizado como RECEPTOR DE DATOS con todos los datos del empleado
+ * @apiNote CONTIENE ATRIBUTO CONTRASEÑA
+ *
+ */
+public record EmpleadoFullDTO(
         Long id,
         String nombre,
         String apellidos,
         String dni,
         String email,
+        String password,
         String telefono,
         LocalDateTime nacimiento,
         Rol rol,
         Estado estado,
         Long idCentro,
         Long idAula
-
-) implements AuthResMapper {
-
-    public static class builder implements BuilderModelBase<EmpleadoDTO> {
-
+) {
+    public static class builder implements BuilderModelBase<EmpleadoFullDTO> {
         private Long id;
         private String nombre;
         private String apellidos;
         private String dni;
         private String email;
+        private String password;
         private String telefono;
         private LocalDateTime nacimiento;
         private Rol rol;
         private Estado estado;
         private Long idCentro;
         private Long idAula;
-
 
         public builder id(Long id) {
             this.id = id;
@@ -63,6 +78,11 @@ public record EmpleadoDTO(
             return this;
         }
 
+        public builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
         public builder telefono(String telefono) {
             this.telefono = telefono;
             return this;
@@ -78,13 +98,13 @@ public record EmpleadoDTO(
             return this;
         }
 
-        public builder idCentro(Long idCentro) {
-            this.idCentro = idCentro;
+        public builder estado(Estado estado) {
+            this.estado = estado;
             return this;
         }
 
-        public builder estado(Estado estado) {
-            this.estado = estado;
+        public builder idCentro(Long idCentro) {
+            this.idCentro = idCentro;
             return this;
         }
 
@@ -94,9 +114,8 @@ public record EmpleadoDTO(
         }
 
         @Override
-        public EmpleadoDTO build() {
-            return new EmpleadoDTO(id, nombre, apellidos, dni, email, telefono, nacimiento, rol, estado, idCentro, idAula);
+        public EmpleadoFullDTO build() {
+            return  new EmpleadoFullDTO(id, nombre, apellidos, dni, email, password, telefono, nacimiento, rol, estado, idCentro, idAula);
         }
     }
-
 }

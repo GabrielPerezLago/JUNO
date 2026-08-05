@@ -1,10 +1,24 @@
 package com.gabriel.juno.domain.models.usuario;
 
-import com.gabriel.juno.domain.models.auth.AuthResMapper;
+import com.gabriel.juno.domain.models.auth.AuthResponseMapper;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
+import com.gabriel.juno.domain.utils.out.RestResponseMapper;
 
 import java.time.LocalDateTime;
 
+/**
+ *
+ * @param id
+ * @param nombre
+ * @param apellidos
+ * @param dni
+ * @param email
+ * @param telefono
+ * @param nacimiento
+ *
+ * Clase sin Arg {password} expecificamente diseñada para ser eviada al cliente
+ *
+ */
 public record UsuarioDTO(
         Long id,
         String nombre,
@@ -13,7 +27,7 @@ public record UsuarioDTO(
         String email,
         String telefono,
         LocalDateTime nacimiento
-) implements AuthResMapper {
+) implements AuthResponseMapper, RestResponseMapper {
 
     public class builder implements BuilderModelBase<UsuarioDTO> {
 

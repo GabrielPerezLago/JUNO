@@ -1,8 +1,8 @@
 package com.gabriel.juno.application.auth;
 
 import com.gabriel.juno.domain.models.auth.AuthReq;
-import com.gabriel.juno.domain.models.auth.AuthResMapper;
-import com.gabriel.juno.domain.models.empleado.EmpleadoUserDTO;
+import com.gabriel.juno.domain.models.auth.AuthResponseMapper;
+import com.gabriel.juno.domain.models.empleado.EmpleadoFullDTO;
 import com.gabriel.juno.domain.models.empleado.utils.Estado;
 import com.gabriel.juno.domain.models.empleado.utils.Rol;
 import com.gabriel.juno.domain.models.usuario.Usuario;
@@ -16,7 +16,7 @@ public class AuthServiceAdapter{
         this.authPort = authPort;
     }
 
-    public AuthResMapper singup(AuthReq authReq) {
+    public AuthResponseMapper singup(AuthReq authReq) {
         if (authReq.rol() == null) {
             Usuario usuario = new Usuario.builder()
                     .nombre(authReq.nombre())
@@ -30,7 +30,7 @@ public class AuthServiceAdapter{
 
             return authPort.registerUsuario(usuario);
         } else {
-            EmpleadoUserDTO empleado = new EmpleadoUserDTO.builder()
+            EmpleadoFullDTO empleado = new EmpleadoFullDTO.builder()
                     .nombre(authReq.nombre())
                     .apellidos(authReq.apellidos())
                     .dni(authReq.dni())

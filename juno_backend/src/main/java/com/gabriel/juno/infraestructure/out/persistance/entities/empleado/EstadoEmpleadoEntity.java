@@ -20,4 +20,6 @@ public class EstadoEmpleadoEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
     private Estado estado;
+
+
 }

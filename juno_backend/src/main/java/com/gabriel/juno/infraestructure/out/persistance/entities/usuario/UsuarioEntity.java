@@ -1,5 +1,6 @@
 package com.gabriel.juno.infraestructure.out.persistance.entities.usuario;
 
+import com.gabriel.juno.domain.models.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,4 +32,17 @@ public class UsuarioEntity {
 
     private String telefono;
     private LocalDateTime nacimiento;
+
+
+    public Usuario transferToUsuario() {
+        return new Usuario.builder()
+                .id(this.getId())
+                .nombre(this.getNombre())
+                .dni(this.getDni())
+                .email(this.getEmail())
+                .password(this.getPassword())
+                .telefono(this.getTelefono())
+                .nacimiento(this.getNacimiento())
+                .build();
+    }
 }

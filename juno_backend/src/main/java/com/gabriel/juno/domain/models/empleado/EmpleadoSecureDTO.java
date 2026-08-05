@@ -1,38 +1,49 @@
 package com.gabriel.juno.domain.models.empleado;
 
+
+import com.gabriel.juno.domain.models.auth.AuthResponseMapper;
 import com.gabriel.juno.domain.models.empleado.utils.Estado;
 import com.gabriel.juno.domain.models.empleado.utils.Rol;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
+import com.gabriel.juno.domain.utils.out.RestResponseMapper;
 
 import java.time.LocalDateTime;
 
-public record EmpleadoUserDTO(
+/**
+ *  Entidad de Empleado Diseñada para ser transferioda al usuario
+ * @implSpec AuthResponseMapper, RestResponseMapper
+ *  */
+public record EmpleadoSecureDTO(
         Long id,
         String nombre,
         String apellidos,
         String dni,
         String email,
-        String password,
         String telefono,
         LocalDateTime nacimiento,
         Rol rol,
         Estado estado,
         Long idCentro,
-        Long idAula
-) {
-    public static class builder implements BuilderModelBase<EmpleadoUserDTO> {
+        Long idAula,
+        String token
+
+) implements AuthResponseMapper, RestResponseMapper {
+
+    public static class builder implements BuilderModelBase<EmpleadoSecureDTO> {
+
         private Long id;
         private String nombre;
         private String apellidos;
         private String dni;
         private String email;
-        private String password;
         private String telefono;
         private LocalDateTime nacimiento;
         private Rol rol;
         private Estado estado;
         private Long idCentro;
         private Long idAula;
+        private String token;
+
 
         public builder id(Long id) {
             this.id = id;
@@ -59,11 +70,6 @@ public record EmpleadoUserDTO(
             return this;
         }
 
-        public builder password(String password) {
-            this.password = password;
-            return this;
-        }
-
         public builder telefono(String telefono) {
             this.telefono = telefono;
             return this;
@@ -79,13 +85,13 @@ public record EmpleadoUserDTO(
             return this;
         }
 
-        public builder estado(Estado estado) {
-            this.estado = estado;
+        public builder idCentro(Long idCentro) {
+            this.idCentro = idCentro;
             return this;
         }
 
-        public builder idCentro(Long idCentro) {
-            this.idCentro = idCentro;
+        public builder estado(Estado estado) {
+            this.estado = estado;
             return this;
         }
 
@@ -94,9 +100,15 @@ public record EmpleadoUserDTO(
             return this;
         }
 
+        public builder token(String token) {
+            this.token = token;
+            return this;
+        }
+
         @Override
-        public EmpleadoUserDTO build() {
-            return  new EmpleadoUserDTO(id, nombre, apellidos, dni, email, password, telefono, nacimiento, rol, estado, idCentro, idAula);
+        public EmpleadoSecureDTO build() {
+            return new EmpleadoSecureDTO(id, nombre, apellidos, dni, email, telefono, nacimiento, rol, estado, idCentro, idAula, token);
         }
     }
+
 }
