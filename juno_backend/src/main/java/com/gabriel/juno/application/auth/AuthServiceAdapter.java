@@ -46,4 +46,8 @@ public class AuthServiceAdapter{
             return authPort.registerEmpleado(empleado);
         }
     }
+
+    public AuthResponseMapper login(String email, String password) {
+
+    }
 }

@@ -1,11 +1,15 @@
 package com.gabriel.juno.infraestructure.out.adapter.auth;
 
+import com.gabriel.juno.domain.models.auth.AuthResponseMapper;
 import com.gabriel.juno.domain.models.empleado.EmpleadoSecureDTO;
 import com.gabriel.juno.domain.models.empleado.EmpleadoFullDTO;
+import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoEstadoException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoIsExistException;
+import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoRolException;
 import com.gabriel.juno.domain.models.usuario.Usuario;
 import com.gabriel.juno.domain.models.usuario.UsuarioDTO;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioIsExistException;
+import com.gabriel.juno.domain.models.usuario.exception.UsuarioNotExistException;
 import com.gabriel.juno.domain.port.auth.AuthRepositoryPort;
 import com.gabriel.juno.infraestructure.out.persistance.entities.empleado.EmpleadoEntity;
 import com.gabriel.juno.infraestructure.out.persistance.entities.usuario.TokenEntity;
@@ -15,9 +19,11 @@ import com.gabriel.juno.infraestructure.out.persistance.repositories.empleado.Em
 import com.gabriel.juno.infraestructure.out.persistance.repositories.empleado.EstadoEmpleadoJpaRepository;
 import com.gabriel.juno.infraestructure.out.persistance.repositories.usuario.TokenJpaRepository;
 import com.gabriel.juno.infraestructure.out.persistance.repositories.usuario.UsuarioJpaRepository;
-import com.gabriel.juno.infraestructure.out.persistance.tools.UsuarioEntityTransafer;
 import com.gabriel.juno.infraestructure.security.jwt.JunoJwtTokenService;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +32,7 @@ import org.springframework.stereotype.Component;
 public class AuthRepositoryAdapter implements AuthRepositoryPort {
     private final PasswordEncoder encoder;
     private final JunoJwtTokenService jwtService;
+    private final AuthenticationManager authManager;
     private final TokenJpaRepository tokenRepository;
     private final UsuarioJpaRepository usuarioRepository;
     private final EmpleadoJpaRepository empleadoRepository;
@@ -33,16 +40,34 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
     private final EmpleadoRolJpaRepository rolEmpleadoRepository;
 
     @Override
-    public EmpleadoSecureDTO loginEmpleado(String email, String password)  {
+    public AuthResponseMapper login(String email, String password) {
+        authManager.authenticate(new UsernamePasswordAuthenticationToken(
+           email,
+           password
+        ));
+
+        var usuarioEntity = usuarioRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsuarioNotExistException(email));
+
+        var token = jwtService.generateToken(usuarioEntity
+                .transferToUsuario());
+
+        var refreshff
+
 
     }
 
     @Override
-    public UsuarioDTO loginUsuario(String email, String password) {}
+    public AuthResponseMapper loginByToken(String token) {
+
+    }
 
     @Override
     public EmpleadoSecureDTO registerEmpleado(EmpleadoFullDTO empleadoFullDTO) {
-        UsuarioEntity existUsuario = usuarioRepository.findByEmail(empleadoFullDTO.email());
+        UsuarioEntity existUsuario = usuarioRepository
+                .findByEmail(empleadoFullDTO.email())
+                .orElse(null);
         if (existUsuario != null) throw new EmpleadoIsExistException(empleadoFullDTO.email());
 
         UsuarioEntity usuarioEnt = usuarioRepository.saveAndFlush(UsuarioEntity.builder()
@@ -55,52 +80,53 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
                         .nacimiento(empleadoFullDTO.nacimiento())
                 .build());
 
-        String tocken = jwtService.generateToken(usuarioEnt.transferToUsuario());
+        String token = jwtService.generateToken(usuarioEnt.transferToUsuario());
 
-        saveToken(tocken, usuarioEnt);
+        saveToken(token, usuarioEnt);
 
-        EmpleadoEntity enmpleadoEnt = empleadoRepository.saveAndFlush(EmpleadoEntity.builder()
-                        .estado(estadoEmpleadoRepository.findByEstado(empleadoFullDTO.estado()).get())
+        EmpleadoEntity empleadoEnt = empleadoRepository.saveAndFlush(EmpleadoEntity.builder()
+                        .estado(estadoEmpleadoRepository.findByEstado(empleadoFullDTO
+                                .estado())
+                                .orElseThrow(() -> new EmpleadoEstadoException()))
+                        .rol(rolEmpleadoRepository.findByRol(empleadoFullDTO
+                                .rol())
+                                .orElseThrow(() -> new EmpleadoRolException()))
                         .usuario(usuarioEnt)
                 .build());
 
-        return new EmpleadoSecureDTO.builder().build();
+
+        return empleadoEnt.transferToEmpleadoSecureDTO(token);
 
     }
 
     @Override
     public UsuarioDTO registerUsuario(Usuario usuario) {
-        UsuarioEntity usuarioEntity = usuarioRepository.findByEmail(usuario.email());
+        UsuarioEntity usuarioEntity = usuarioRepository
+                .findByEmail(usuario.email())
+                .orElse(null);
+
+
         if (usuarioEntity != null) throw new UsuarioIsExistException(usuario.email());
 
         String token = jwtService.generateToken(usuario);
 
 
 
-        UsuarioEntity usuarioSave = UsuarioEntity.builder()
-                        .nombre(usuario.nombre())
-                        .apellidos(usuario.apellidos())
-                        .dni(usuario.dni())
-                        .email(usuario.email())
-                        .password(encoder.encode(usuario.password()))
-                        .telefono(usuario.telefono())
-                        .nacimiento(usuario.nacimiento())
-                        .build();
-        usuarioRepository.save(usuarioSave);
+        UsuarioEntity usuarioSave = usuarioRepository.saveAndFlush(UsuarioEntity.builder()
+                .nombre(usuario.nombre())
+                .apellidos(usuario.apellidos())
+                .dni(usuario.dni())
+                .email(usuario.email())
+                .password(encoder.encode(usuario.password()))
+                .telefono(usuario.telefono())
+                .nacimiento(usuario.nacimiento())
+                .build());
 
         /*Gusrdamos el token en base de datos */
         saveToken(token , usuarioEntity);
 
 
-        return new UsuarioDTO(
-                usuario.id(),
-                usuario.nombre(),
-                usuario.apellidos(),
-                usuario.dni(),
-                usuario.email(),
-                usuario.telefono(),
-                usuario.nacimiento()
-        );
+        return usuarioSave.transferToUsuarioDTO(token);
     }
 
     /**
@@ -108,11 +134,10 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
      * @param token
      * @param usuario
      *
-     * Metodo que guarda con un hilo (Thread) el token en base de datos
-     *
-     * @hidden Thread
+     * Metodo que guarda el token en base de datos asincronamente
      */
-    private synchronized void saveToken(String token, UsuarioEntity usuario) {
+    @Async
+    public synchronized void saveToken(String token, UsuarioEntity usuario) {
          TokenEntity tk = TokenEntity.builder()
                     .token(token)
                     .rekoed(false)

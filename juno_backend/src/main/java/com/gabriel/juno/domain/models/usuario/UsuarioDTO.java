@@ -26,10 +26,23 @@ public record UsuarioDTO(
         String dni,
         String email,
         String telefono,
-        LocalDateTime nacimiento
+        LocalDateTime nacimiento,
+        String token
 ) implements AuthResponseMapper, RestResponseMapper {
 
-    public class builder implements BuilderModelBase<UsuarioDTO> {
+    public UsuarioDTO(
+            Long id,
+            String nombre,
+            String apellidos,
+            String dni,
+            String email,
+            String telefono,
+            LocalDateTime nacimiento
+    ) {
+        this(id, nombre,apellidos, dni, email, telefono, nacimiento, null);
+    }
+
+    public static class builder implements BuilderModelBase<UsuarioDTO> {
 
         private Long id;
         private String nombre;
@@ -38,6 +51,7 @@ public record UsuarioDTO(
         private String email;
         private String telefono;
         private LocalDateTime nacimiento;
+        private String token;
 
         public builder id(Long id) {
             this.id = id;
@@ -74,6 +88,11 @@ public record UsuarioDTO(
             return this;
         }
 
+        public builder token(String token) {
+            this.token = token;
+            return this;
+        }
+
         @Override
         public UsuarioDTO build() {
             return new UsuarioDTO(
@@ -83,7 +102,8 @@ public record UsuarioDTO(
                     this.dni,
                     this.email,
                     this.telefono,
-                    this.nacimiento
+                    this.nacimiento,
+                    this.token
             );
         }
     }

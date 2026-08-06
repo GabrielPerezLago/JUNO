@@ -2,15 +2,18 @@ package com.gabriel.juno.infraestructure.security.jwt;
 
 
 import com.gabriel.juno.domain.models.usuario.Usuario;
-import com.gabriel.juno.domain.models.usuario.UsuarioDTO;
+import com.gabriel.juno.infraestructure.out.persistance.entities.usuario.TokenEntity;
+import com.gabriel.juno.infraestructure.out.persistance.repositories.usuario.TokenJpaRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +22,10 @@ import java.util.Map;
  */
 @Component
 public class JunoJwtTokenService {
+
+    private final TokenJpaRepository tokenJpaRepository;
+
+
 
     @Value("${api.security.jwt.secret}")
     private String key;
@@ -32,6 +39,10 @@ public class JunoJwtTokenService {
 
     @Value("${api.security.jwt.issuer}")
     private String issuer;
+
+    public  JunoJwtTokenService(TokenJpaRepository tokenJpaRepository) {
+        this.tokenJpaRepository = tokenJpaRepository;
+    }
 
     /**
      * @param usuario
@@ -50,6 +61,22 @@ public class JunoJwtTokenService {
      */
     public String genereateRefreshToken(final Usuario usuario) {
         return tokenComposser(usuario, refreshTokenExpiration);
+    }
+
+
+    private void revokeAllUserTokens(final Usuario usuario) {
+        final List<TokenEntity> validUserTokens = tokenJpaRepository
+                .findAllValidIsFalseOrRevoquedIsFaslseByUsuarioId(usuario.id())
+                .stream().toList();
+
+        if (!validUserTokens.isEmpty()) {
+            for (TokenEntity token: validUserTokens) {
+                token.setExpired(true);
+                token.setRekoed(true);
+            }
+        }
+
+        tokenJpaRepository.saveAll(validUserTokens);
     }
 
 
