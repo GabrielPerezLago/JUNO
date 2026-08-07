@@ -1,5 +1,6 @@
 package com.gabriel.juno.infraestructure.out.persistance.entities.empleado;
 
+import com.gabriel.juno.domain.models.auth.SujetoDTO;
 import com.gabriel.juno.domain.models.empleado.EmpleadoSecureDTO;
 import com.gabriel.juno.infraestructure.out.persistance.entities.aula.AulaEntity;
 import com.gabriel.juno.infraestructure.out.persistance.entities.centro.CentroEntity;
@@ -16,8 +17,11 @@ import lombok.*;
 @Table(schema = "juno", name = "empleado")
 public class EmpleadoEntity {
     @Id
-    @ManyToOne
+    private Long id;
+
+    @OneToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
+    @MapsId //Esto es para que capture el id y haga relacion con el dide del usuario
     private UsuarioEntity usuario;
 
     @ManyToOne
@@ -50,6 +54,22 @@ public class EmpleadoEntity {
                 .idAula(this.getAula().getId())
                 .idCentro(this.getCentro().getId())
                 .token(token)
+                .build();
+    }
+
+    public SujetoDTO trasferToSujetoDTO() {
+        return  new SujetoDTO.builder()
+                .id(this.usuario.getId())
+                .nombre(this.usuario.getNombre())
+                .apellidos(this.usuario.getApellidos())
+                .dni(this.usuario.getDni())
+                .email(this.usuario.getEmail())
+                .telefono(this.usuario.getTelefono())
+                .nacimineto(this.usuario.getNacimiento())
+                .rol(this.rol.getRol())
+                .estado(this.estado.getEstado())
+                .idAula(this.aula.getId())
+                .idCentro(this.centro.getId())
                 .build();
     }
 }

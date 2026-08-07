@@ -6,8 +6,10 @@ import com.gabriel.juno.domain.models.empleado.EmpleadoFullDTO;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoEstadoException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoIsExistException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoRolException;
+import com.gabriel.juno.domain.models.token.TokenDataContainerDTO;
 import com.gabriel.juno.domain.models.usuario.Usuario;
 import com.gabriel.juno.domain.models.usuario.UsuarioDTO;
+import com.gabriel.juno.domain.models.usuario.exception.UsuarioException;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioIsExistException;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioNotExistException;
 import com.gabriel.juno.domain.port.auth.AuthRepositoryPort;
@@ -21,12 +23,14 @@ import com.gabriel.juno.infraestructure.out.persistance.repositories.usuario.Tok
 import com.gabriel.juno.infraestructure.out.persistance.repositories.usuario.UsuarioJpaRepository;
 import com.gabriel.juno.infraestructure.security.jwt.JunoJwtTokenService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class AuthRepositoryAdapter implements AuthRepositoryPort {
@@ -40,37 +44,80 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
     private final EmpleadoRolJpaRepository rolEmpleadoRepository;
 
     @Override
-    public AuthResponseMapper login(String email, String password) {
+    public TokenDataContainerDTO login(String email, String password) {
+        /* Auth de Spring */
         authManager.authenticate(new UsernamePasswordAuthenticationToken(
            email,
            password
         ));
 
+        /* Comprobamos si el usuario existe */
         var usuarioEntity = usuarioRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new UsuarioNotExistException(email));
 
-        var token = jwtService.generateToken(usuarioEntity
+        /* Comprobamos si es un empleado */
+        var empleadoEntity = empleadoRepository
+                .findById(usuarioEntity.getId())
+                .orElse(null);
+
+        String token;
+        String refreshToken;
+
+        /*
+            Generamos token dependiendo si es un usuario o un empleado
+        */
+        if (empleadoEntity == null) {
+            token = jwtService.generateToken(usuarioEntity
+                    .transferToSujetoDTO());
+            refreshToken = jwtService.generateRefreshToken(usuarioEntity
+                    .transferToSujetoDTO());
+
+        } else {
+            token = jwtService
+                    .generateToken(empleadoEntity
+                    .trasferToSujetoDTO());
+            refreshToken = jwtService
+                    .generateRefreshToken(empleadoEntity
+                    .trasferToSujetoDTO());
+        }
+
+        /*
+            Revocamos los tokens existentes
+        */
+        jwtService.revokeUserTokens(usuarioEntity
                 .transferToUsuario());
 
-        var refreshff
+        /*
+            Guardamos los nuevos tokens
+        */
+        this.saveToken(token, usuarioEntity);
+        this.saveRefreshToken(refreshToken, usuarioEntity);
 
+
+        /*
+            Retornamos los Tokens
+         */
+        return new TokenDataContainerDTO(token, refreshToken);
 
     }
 
     @Override
-    public AuthResponseMapper loginByToken(String token) {
-
+    public TokenDataContainerDTO loginByToken(String token) {
+        return null;
     }
 
     @Override
-    public EmpleadoSecureDTO registerEmpleado(EmpleadoFullDTO empleadoFullDTO) {
+    public TokenDataContainerDTO registerEmpleado(EmpleadoFullDTO empleadoFullDTO) {
+        /* Comporbamos que el USUARIO NO EXISTA */
         UsuarioEntity existUsuario = usuarioRepository
                 .findByEmail(empleadoFullDTO.email())
-                .orElse(null);
+                .orElseThrow(null);
+
         if (existUsuario != null) throw new EmpleadoIsExistException(empleadoFullDTO.email());
 
-        UsuarioEntity usuarioEnt = usuarioRepository.saveAndFlush(UsuarioEntity.builder()
+        /*Guardamos el usuario en base de datos*/
+        UsuarioEntity usuarioEntity = usuarioRepository.saveAndFlush(UsuarioEntity.builder()
                         .nombre(empleadoFullDTO.nombre())
                         .apellidos(empleadoFullDTO.apellidos())
                         .dni(empleadoFullDTO.dni())
@@ -80,10 +127,20 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
                         .nacimiento(empleadoFullDTO.nacimiento())
                 .build());
 
-        String token = jwtService.generateToken(usuarioEnt.transferToUsuario());
+        if (usuarioEntity == null) throw new UsuarioException("No se ha podido dar de alta al usuario");
 
-        saveToken(token, usuarioEnt);
+        /* Generamos Tokens */
+        String token = jwtService
+                .generateToken(usuarioEntity.transferToSujetoDTO());
 
+        String refreshToken = jwtService
+                .generateRefreshToken(usuarioEntity.transferToSujetoDTO());
+
+        /* Guardamos Tokens en Base de datos */
+        saveToken(token, usuarioEntity);
+        saveRefreshToken(refreshToken, usuarioEntity);
+
+        /* Damos de alta al EMPELAADO */
         EmpleadoEntity empleadoEnt = empleadoRepository.saveAndFlush(EmpleadoEntity.builder()
                         .estado(estadoEmpleadoRepository.findByEstado(empleadoFullDTO
                                 .estado())
@@ -91,28 +148,24 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
                         .rol(rolEmpleadoRepository.findByRol(empleadoFullDTO
                                 .rol())
                                 .orElseThrow(() -> new EmpleadoRolException()))
-                        .usuario(usuarioEnt)
+                        .usuario(usuarioEntity)
                 .build());
-
-
-        return empleadoEnt.transferToEmpleadoSecureDTO(token);
+        /* Retornamos el Token */
+        return new TokenDataContainerDTO(token, refreshToken);
 
     }
 
     @Override
-    public UsuarioDTO registerUsuario(Usuario usuario) {
+    public TokenDataContainerDTO registerUsuario(Usuario usuario) {
+        /* Comporbamos que NO EXISTA el usuario */
         UsuarioEntity usuarioEntity = usuarioRepository
                 .findByEmail(usuario.email())
                 .orElse(null);
 
-
         if (usuarioEntity != null) throw new UsuarioIsExistException(usuario.email());
 
-        String token = jwtService.generateToken(usuario);
-
-
-
-        UsuarioEntity usuarioSave = usuarioRepository.saveAndFlush(UsuarioEntity.builder()
+        /* Damso de alta al usuario */
+        usuarioEntity = usuarioRepository.saveAndFlush(UsuarioEntity.builder()
                 .nombre(usuario.nombre())
                 .apellidos(usuario.apellidos())
                 .dni(usuario.dni())
@@ -122,11 +175,22 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
                 .nacimiento(usuario.nacimiento())
                 .build());
 
+        if ( usuarioEntity == null ) throw new UsuarioException("El Usuario no ha podido ser dado de alta en estos momentos");
+
+        /*Generamos tokens*/
+        String token = jwtService.generateToken(usuarioEntity.transferToSujetoDTO());
+        String refreshToken = jwtService.generateRefreshToken(usuarioEntity.transferToSujetoDTO());
+
+
         /*Gusrdamos el token en base de datos */
         saveToken(token , usuarioEntity);
+        saveRefreshToken(refreshToken, usuarioEntity);
 
-
-        return usuarioSave.transferToUsuarioDTO(token);
+        /*Retornamos Tokens */
+        return new TokenDataContainerDTO.builder()
+                .token(token)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     /**
@@ -137,7 +201,7 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
      * Metodo que guarda el token en base de datos asincronamente
      */
     @Async
-    public synchronized void saveToken(String token, UsuarioEntity usuario) {
+    public void saveToken(String token, UsuarioEntity usuario) {
          TokenEntity tk = TokenEntity.builder()
                     .token(token)
                     .rekoed(false)
@@ -145,5 +209,17 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
                     .usuario(usuario)
                     .build();
          tokenRepository.save(tk);
+    }
+
+    @Async
+    public void saveRefreshToken(String token, UsuarioEntity usuario) {
+        tokenRepository
+                .save(TokenEntity.builder()
+                        .token(token)
+                        .rekoed(false)
+                        .expired(false)
+                        .tokenType(null)
+                        .usuario(usuario)
+                        .build());
     }
 }

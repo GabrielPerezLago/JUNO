@@ -22,9 +22,8 @@ public class AulaEntity {
     @Column(nullable = false)
     private String nombre;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(nullable = false, name = "id_tipo")
-    @Column(nullable = false)
     private TipoAulaEntity tipo;
 
     @ManyToOne

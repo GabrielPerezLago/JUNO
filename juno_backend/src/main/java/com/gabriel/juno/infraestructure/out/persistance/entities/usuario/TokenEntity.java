@@ -10,6 +10,11 @@ import lombok.*;
 @Entity
 @Table(schema = "juno", name = "token")
 public class TokenEntity {
+
+    public enum TokenType {
+        BEARER
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,8 +28,19 @@ public class TokenEntity {
     @Column(nullable = false)
     private Boolean expired;
 
+    @Enumerated(EnumType.STRING)
+    private TokenType tokenType = TokenType.BEARER;
+
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
     private UsuarioEntity usuario;
 
+
+    public boolean isRevoqued() {
+        return getRekoed();
+    }
+
+    public boolean isExpired() {
+        return getExpired();
+    }
 }

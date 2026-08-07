@@ -30,7 +30,7 @@ public class JunoApplicationConfig {
     @Bean
     public UserDetailsService userDetailService() {
         return username -> {
-            final UsuarioEntity usuario = usuarioJpaRepository.findAllByEmail(username)
+            final UsuarioEntity usuario = usuarioJpaRepository.findByEmail(username)
                     .orElseThrow(() -> new UsuarioNotExistException(username));
 
             return User.builder()

@@ -1,5 +1,6 @@
 package com.gabriel.juno.infraestructure.out.persistance.entities.usuario;
 
+import com.gabriel.juno.domain.models.auth.SujetoDTO;
 import com.gabriel.juno.domain.models.usuario.Usuario;
 import com.gabriel.juno.domain.models.usuario.UsuarioDTO;
 import jakarta.persistence.*;
@@ -67,6 +68,18 @@ public class UsuarioEntity {
                 .telefono(this.getTelefono())
                 .nacimiento(this.getNacimiento())
                 .token(token)
+                .build();
+    }
+
+    public SujetoDTO transferToSujetoDTO () {
+        return new SujetoDTO.builder()
+                .id(this.getId())
+                .nombre(this.getNombre())
+                .apellidos(this.getApellidos())
+                .dni(this.getDni())
+                .email(this.getEmail())
+                .telefono(this.getTelefono())
+                .nacimineto(this.getNacimiento())
                 .build();
     }
 }

@@ -1,17 +1,23 @@
 package com.gabriel.juno.infraestructure.security.jwt;
 
 
+import com.gabriel.juno.domain.models.auth.SujetoDTO;
 import com.gabriel.juno.domain.models.usuario.Usuario;
+import com.gabriel.juno.domain.port.token.TokenComposerPort;
 import com.gabriel.juno.infraestructure.out.persistance.entities.usuario.TokenEntity;
 import com.gabriel.juno.infraestructure.out.persistance.repositories.usuario.TokenJpaRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +27,8 @@ import java.util.Map;
  * @author Gabriel
  */
 @Component
-public class JunoJwtTokenService {
+public class JunoJwtTokenService
+        extends TokenComposerPort {
 
     private final TokenJpaRepository tokenJpaRepository;
 
@@ -44,27 +51,45 @@ public class JunoJwtTokenService {
         this.tokenJpaRepository = tokenJpaRepository;
     }
 
-    /**
-     * @param usuario
-     *
-     * Metodo que genera un token normal
-     *
-     * @return Token
-     */
-    public String generateToken(final Usuario usuario) {
-        return tokenComposser(usuario, expiration);
-    }
-    /**
-     * Metodo que genera un token de refresco
-     * @param usuario
-     * @return
-     */
-    public String genereateRefreshToken(final Usuario usuario) {
-        return tokenComposser(usuario, refreshTokenExpiration);
+    @Override
+    public String generateToken(final SujetoDTO sujeto) {
+        return tokenComposser(sujeto, expiration);
     }
 
 
-    private void revokeAllUserTokens(final Usuario usuario) {
+    @Override
+    public String generateRefreshToken(final SujetoDTO sujeto) {
+        return tokenComposser(sujeto, refreshTokenExpiration);
+    }
+
+    @Override
+    public Boolean validateToken(String token, Usuario usuario) {
+        var username = extractUsernameToToken(token);
+        return username.equals(usuario.email());
+
+    }
+
+    public String estractUserName(final String token) {
+        return estractUserName(token);
+    }
+
+    @Override
+    public void revokeUserTokens(Usuario usuario) {
+        this.revokeAllUserTokens(usuario);
+    }
+
+    @Override
+    protected String extractUsernameToToken(String token) {
+        Claims jwtClaimToken = Jwts.parser()
+                .verifyWith(getSignInKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return jwtClaimToken.getSubject();
+    }
+
+    @Override
+    protected void revokeAllUserTokens(final Usuario usuario) {
         final List<TokenEntity> validUserTokens = tokenJpaRepository
                 .findAllValidIsFalseOrRevoquedIsFaslseByUsuarioId(usuario.id())
                 .stream().toList();
@@ -79,23 +104,22 @@ public class JunoJwtTokenService {
         tokenJpaRepository.saveAll(validUserTokens);
     }
 
-
-
-    /**
-     * @param usuario
-     * @param expiration
-     *
-     * Metodo que genera un token mediante un usuario y con un nivel de expiracion
-     * @return String __ Token
-     */
-    private String tokenComposser(final Usuario usuario, final Long expiration) {
+    @Override
+    protected String tokenComposser(final SujetoDTO sujeto, final Long expiration) {
         return Jwts.builder()
-                .id(usuario.id().toString())
+                .id(sujeto.id().toString())
                 .claims(Map.of(
-                        "nombre", usuario.nombre(),
-                        "dni", usuario.dni()
+                        "nombre", sujeto.nombre(),
+                        "apellidos", sujeto.apellidos(),
+                        "dni", sujeto.dni(),
+                        "telefono", sujeto.telefono(),
+                        "nacimiento", sujeto.nacimiento().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                        "rol", sujeto.rol().toString(),
+                        "estado", sujeto.estado().toString(),
+                        "id_centro", sujeto.idCentro(),
+                        "id_aula", sujeto.idAula()
                         ))
-                .subject(usuario.email())
+                .subject(sujeto.email())
                 .issuer(issuer)
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(signKeyGenerator())
@@ -112,7 +136,10 @@ public class JunoJwtTokenService {
         byte[] keyBytes = Decoders.BASE64.decode(key);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
+    private SecretKey getSignInKey() {
+        byte[] keyByBytes = Decoders.BASE64.decode(key);
+        return Keys.hmacShaKeyFor(keyByBytes);
+    }
 
 
 
