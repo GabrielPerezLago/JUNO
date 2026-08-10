@@ -23,5 +23,10 @@ public class CentroEntity {
     @Column(nullable = false)
     private String email;
 
-    private LocalDateTime fundacion;
+    private String descripcion;
+
+    @Column(nullable = false)
+    private String telefono;
+
+    private String direccion;
 }

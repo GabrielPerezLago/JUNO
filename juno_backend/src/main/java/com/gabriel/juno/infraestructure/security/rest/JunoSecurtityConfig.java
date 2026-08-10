@@ -67,7 +67,7 @@ public class JunoSecurtityConfig {
                 .orElseThrow(()-> new TokenException("El token no existe"));
 
         tk.setExpired(true);
-        tk.setRekoed(true);
+        tk.setRevoked(true);
 
         tokenJpaRepository.save(tk);
 

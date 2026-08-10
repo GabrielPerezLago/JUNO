@@ -12,12 +12,9 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -91,13 +88,13 @@ public class JunoJwtTokenService
     @Override
     protected void revokeAllUserTokens(final Usuario usuario) {
         final List<TokenEntity> validUserTokens = tokenJpaRepository
-                .findAllValidIsFalseOrRevoquedIsFaslseByUsuarioId(usuario.id())
-                .stream().toList();
+                .findAllExpiredIsFalseOrRevokedIsFalseByUsuarioId(usuario.id())
+                .orElse(List.of());
 
         if (!validUserTokens.isEmpty()) {
             for (TokenEntity token: validUserTokens) {
                 token.setExpired(true);
-                token.setRekoed(true);
+                token.setRevoked(true);
             }
         }
 
@@ -110,14 +107,14 @@ public class JunoJwtTokenService
                 .id(sujeto.id().toString())
                 .claims(Map.of(
                         "nombre", sujeto.nombre(),
-                        "apellidos", sujeto.apellidos(),
+                        "apellidos", sujeto.apellidos() == null ? "" : sujeto.apellidos(),
                         "dni", sujeto.dni(),
                         "telefono", sujeto.telefono(),
-                        "nacimiento", sujeto.nacimiento().format(DateTimeFormatter.ISO_LOCAL_DATE),
-                        "rol", sujeto.rol().toString(),
-                        "estado", sujeto.estado().toString(),
-                        "id_centro", sujeto.idCentro(),
-                        "id_aula", sujeto.idAula()
+                        "nacimiento", sujeto.nacimiento() == null ? "" : sujeto.nacimiento(),
+                        "rol", sujeto.rol() == null ? "" : sujeto.rol(),
+                        "estado", sujeto.estado() == null ?  "" : sujeto.estado(),
+                        "id_centro", sujeto.idCentro() == null ? "" : sujeto.idCentro(),
+                        "id_aula", sujeto.idAula() == null ? "" : sujeto.idCentro()
                         ))
                 .subject(sujeto.email())
                 .issuer(issuer)

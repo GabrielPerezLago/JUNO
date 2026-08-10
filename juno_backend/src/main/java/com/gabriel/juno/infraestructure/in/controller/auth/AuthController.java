@@ -1,8 +1,6 @@
 package com.gabriel.juno.infraestructure.in.controller.auth;
 
 import com.gabriel.juno.application.auth.AuthServiceAdapter;
-import com.gabriel.juno.domain.models.auth.AuthReq;
-import com.gabriel.juno.domain.models.auth.AuthResponseMapper;
 import com.gabriel.juno.domain.models.auth.SujetoDTO;
 import com.gabriel.juno.domain.models.token.TokenDataContainerDTO;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,7 @@ public class AuthController {
     private final AuthServiceAdapter service;
 
     @PostMapping("/signup")
-    public ResponseEntity<TokenDataContainerDTO> signup(SujetoDTO sujeto) {
+    public ResponseEntity<TokenDataContainerDTO> signup(@RequestBody SujetoDTO sujeto) {
         return ResponseEntity.status(200).body(service.singup(sujeto));
     }
 

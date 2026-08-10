@@ -1,7 +1,6 @@
 package com.gabriel.juno.domain.models.empleado;
 
 
-import com.gabriel.juno.domain.models.auth.AuthResponseMapper;
 import com.gabriel.juno.domain.models.empleado.utils.Estado;
 import com.gabriel.juno.domain.models.empleado.utils.Rol;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
@@ -27,7 +26,7 @@ public record EmpleadoSecureDTO(
         Long idAula,
         String token
 
-) implements AuthResponseMapper, RestResponseMapper {
+) implements RestResponseMapper {
 
     public static class builder implements BuilderModelBase<EmpleadoSecureDTO> {
 

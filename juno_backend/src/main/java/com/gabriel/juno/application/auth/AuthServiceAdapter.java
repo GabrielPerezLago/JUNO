@@ -1,7 +1,5 @@
 package com.gabriel.juno.application.auth;
 
-import com.gabriel.juno.domain.models.auth.AuthReq;
-import com.gabriel.juno.domain.models.auth.AuthResponseMapper;
 import com.gabriel.juno.domain.models.auth.SujetoDTO;
 import com.gabriel.juno.domain.models.empleado.EmpleadoFullDTO;
 import com.gabriel.juno.domain.models.empleado.utils.Estado;

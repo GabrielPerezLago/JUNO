@@ -1,14 +1,11 @@
 package com.gabriel.juno.infraestructure.out.adapter.auth;
 
-import com.gabriel.juno.domain.models.auth.AuthResponseMapper;
-import com.gabriel.juno.domain.models.empleado.EmpleadoSecureDTO;
 import com.gabriel.juno.domain.models.empleado.EmpleadoFullDTO;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoEstadoException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoIsExistException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoRolException;
 import com.gabriel.juno.domain.models.token.TokenDataContainerDTO;
 import com.gabriel.juno.domain.models.usuario.Usuario;
-import com.gabriel.juno.domain.models.usuario.UsuarioDTO;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioException;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioIsExistException;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioNotExistException;
@@ -165,7 +162,7 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
         if (usuarioEntity != null) throw new UsuarioIsExistException(usuario.email());
 
         /* Damso de alta al usuario */
-        usuarioEntity = usuarioRepository.saveAndFlush(UsuarioEntity.builder()
+        var usuarioEntitySave = usuarioRepository.saveAndFlush(UsuarioEntity.builder()
                 .nombre(usuario.nombre())
                 .apellidos(usuario.apellidos())
                 .dni(usuario.dni())
@@ -175,16 +172,16 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
                 .nacimiento(usuario.nacimiento())
                 .build());
 
-        if ( usuarioEntity == null ) throw new UsuarioException("El Usuario no ha podido ser dado de alta en estos momentos");
+        if ( usuarioEntitySave == null ) throw new UsuarioException("El Usuario no ha podido ser dado de alta en estos momentos");
 
         /*Generamos tokens*/
-        String token = jwtService.generateToken(usuarioEntity.transferToSujetoDTO());
-        String refreshToken = jwtService.generateRefreshToken(usuarioEntity.transferToSujetoDTO());
+        String token = jwtService.generateToken(usuarioEntitySave.transferToSujetoDTO());
+        String refreshToken = jwtService.generateRefreshToken(usuarioEntitySave.transferToSujetoDTO());
 
 
         /*Gusrdamos el token en base de datos */
-        saveToken(token , usuarioEntity);
-        saveRefreshToken(refreshToken, usuarioEntity);
+        saveToken(token , usuarioEntitySave);
+        saveRefreshToken(refreshToken, usuarioEntitySave);
 
         /*Retornamos Tokens */
         return new TokenDataContainerDTO.builder()
@@ -204,7 +201,7 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
     public void saveToken(String token, UsuarioEntity usuario) {
          TokenEntity tk = TokenEntity.builder()
                     .token(token)
-                    .rekoed(false)
+                    .revoked(false)
                     .expired(false)
                     .usuario(usuario)
                     .build();
@@ -216,7 +213,7 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
         tokenRepository
                 .save(TokenEntity.builder()
                         .token(token)
-                        .rekoed(false)
+                        .revoked(false)
                         .expired(false)
                         .tokenType(null)
                         .usuario(usuario)

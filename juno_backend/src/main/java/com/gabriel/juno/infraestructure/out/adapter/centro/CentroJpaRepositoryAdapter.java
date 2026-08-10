@@ -22,7 +22,6 @@ public class CentroJpaRepositoryAdapter implements CentroRepositoryPort {
                         .id(centro.getId())
                         .nombre(centro.getNombre())
                         .email(centro.getEmail())
-                        .fundacion(centro.getFundacion())
                         .build())
                 .toList();
     }

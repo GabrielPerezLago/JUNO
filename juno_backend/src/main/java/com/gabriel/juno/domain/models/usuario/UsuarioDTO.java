@@ -1,6 +1,5 @@
 package com.gabriel.juno.domain.models.usuario;
 
-import com.gabriel.juno.domain.models.auth.AuthResponseMapper;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
 import com.gabriel.juno.domain.utils.out.RestResponseMapper;
 
@@ -28,7 +27,7 @@ public record UsuarioDTO(
         String telefono,
         LocalDateTime nacimiento,
         String token
-) implements AuthResponseMapper, RestResponseMapper {
+) implements RestResponseMapper {
 
     public UsuarioDTO(
             Long id,

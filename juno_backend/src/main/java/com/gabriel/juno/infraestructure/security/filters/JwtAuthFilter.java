@@ -56,7 +56,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final TokenEntity token = tokenJpaRepository.findByToken(jwtToken)
                 .orElse(null);
 
-        if (token == null || token.isRevoqued() || token.isExpired()) {
+        if (token == null || token.isRevoked() || token.isExpired()) {
             filterChain.doFilter(request, response);
             return;
         }

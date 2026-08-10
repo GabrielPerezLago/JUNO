@@ -19,6 +19,7 @@ public class UsuarioEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nombre;
 
     private String apellidos;
@@ -33,6 +34,7 @@ public class UsuarioEntity {
     private String password;
 
     private String telefono;
+
     private LocalDateTime nacimiento;
 
 

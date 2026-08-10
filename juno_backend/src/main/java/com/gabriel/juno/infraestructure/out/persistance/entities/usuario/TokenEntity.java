@@ -23,12 +23,13 @@ public class TokenEntity {
     private String token;
 
     @Column(nullable = false)
-    private Boolean rekoed;
+    private Boolean revoked;
 
     @Column(nullable = false)
     private Boolean expired;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "tipo")
     private TokenType tokenType = TokenType.BEARER;
 
     @ManyToOne
@@ -36,8 +37,8 @@ public class TokenEntity {
     private UsuarioEntity usuario;
 
 
-    public boolean isRevoqued() {
-        return getRekoed();
+    public boolean isRevoked() {
+        return revoked;
     }
 
     public boolean isExpired() {
