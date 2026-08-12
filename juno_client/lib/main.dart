@@ -16,7 +16,7 @@ class JunoClient extends StatelessWidget {
     routerConfig: router,
     themeMode: ThemeMode.system,
     theme: JunoThemeProvider.LIGHT,
-    darkTheme: JunoThemeProvider.DARK
+    darkTheme: JunoThemeProvider.DARK,
   );
 
 }

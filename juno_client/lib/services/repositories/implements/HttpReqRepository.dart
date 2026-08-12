@@ -25,7 +25,7 @@ abstract interface class HttpReqRepository {
       headers: appJsonHeader,
       body: jsonEncode(args)
     );
-  } 
+   
 
   static Future<Response> POST_QUERY(final String endpoint, final Map<String, dynamic> args) async {
 
