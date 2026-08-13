@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:juno_client/config/app/app.tools.dart';
+import 'package:juno_client/domain/entity/SESSION.dart';
 
 class LoginMovileLayout extends StatefulWidget {
 
@@ -28,7 +29,7 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                         image: AssetImage('assets/images/logo.png'),
                         width: width(context) * 0.6,
                       ),
-                      Text('JUNO', style: TextStyle(fontSize: width(context) * 0.1),)
+                      Text('JUNO', style: TextStyle(fontSize: width(context) * 0.1, ),)
                    ],
                 )
               ),
