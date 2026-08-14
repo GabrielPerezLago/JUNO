@@ -11,6 +11,20 @@ class Usuario {
   int? idCentro;
   int? idAula;
 
+  Usuario({
+    this.id,
+    this.nombre,
+    this.apellidos,
+    this.dni,
+    this.email,
+    this.telefono,
+    this.nacimiento,
+    this.estado,
+    this.rol,
+    this.idAula,
+    this.idCentro
+  });
+
 
   
-} 
+}

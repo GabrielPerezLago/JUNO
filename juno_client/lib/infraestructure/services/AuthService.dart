@@ -8,7 +8,6 @@ import 'package:juno_client/infraestructure/repositories/AuthRepository.dart';
 
 class AuthService {
   final _url_login = '/login';
-  final _storage = const FlutterSecureStorage();
   final AuthRepository repository = AuthRepository();
   
   Future<Token> login(final String email, final String password) async {

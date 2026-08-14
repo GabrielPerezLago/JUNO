@@ -20,5 +20,17 @@ class AuthControllerAdapter  {
   }
 
 
+  bool login({
+    String email = '',
+    String password= ''
+  }) {
+    bool finish = false ;
+    _port?.login(email, password)
+    .then((bool isFinish) => isFinish ? finish = true : finish = false);
+
+    return finish;
+  }
+
+
 
 }

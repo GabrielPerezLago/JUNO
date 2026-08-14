@@ -24,12 +24,13 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                 flex: 3,
                 child:  Column(
                    mainAxisAlignment: MainAxisAlignment.center,
+                   spacing: height(context) * 0.05,
                    children: [
                       Image(
                         image: AssetImage('assets/images/logo.png'),
                         width: width(context) * 0.6,
                       ),
-                      Text('JUNO', style: TextStyle(fontSize: width(context) * 0.1, ),)
+                      Text('JUNO', style: TextStyle(fontSize: width(context) * 0.25, fontFamily: 'Leckerli', color: junoColorScheme(context).secondary ),)
                    ],
                 )
               ),

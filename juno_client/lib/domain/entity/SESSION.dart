@@ -35,7 +35,19 @@ class SESSION {
 
 
 
-
+  void usuarioSaveSession(final Usuario usuario){
+    _id = usuario.id!;
+    nombre = usuario.nombre;
+    apellidos = usuario.apellidos;
+    dni = usuario.dni;
+    email = usuario.email;
+    telefono = usuario.telefono;
+    nacimiento = usuario.nacimiento;
+    rol = usuario.rol;
+    estado = usuario.estado;
+    idCentro = usuario.idCentro;
+    idAula = usuario.idAula;
+  }
 
   SESSION._internal();
 }
