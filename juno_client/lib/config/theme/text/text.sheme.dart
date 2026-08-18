@@ -9,7 +9,7 @@ abstract class JunoTextThemeProvider {
   );
 
   static TextTheme light() => ThemeData.light().textTheme.apply(
-    bodyColor: Colors.black,
+    bodyColor: Color(0xff333333),
     fontFamily: 'Merienda'
   );
 

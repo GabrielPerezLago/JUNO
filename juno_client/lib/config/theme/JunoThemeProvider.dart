@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:juno_client/config/theme/colors/scaffold.color.dart';
-import 'package:juno_client/config/theme/schemes/color.scheme.dart';
+import 'package:juno_client/config/theme/colors/color.scheme.dart';
 import 'package:juno_client/config/theme/schemes/elevatedButton.theme.dart';
 import 'package:juno_client/config/theme/schemes/input.decoration.dart';
 import 'package:juno_client/config/theme/text/text.sheme.dart';

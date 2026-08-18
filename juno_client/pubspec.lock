@@ -168,6 +168,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  getwidget:
+    dependency: "direct main"
+    description:
+      name: getwidget
+      sha256: "8824741c1ec45d54f8cfba00ffd63da7527767447dafbe4e922d8ba14834407c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.2"
   go_router:
     dependency: "direct main"
     description:

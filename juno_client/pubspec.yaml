@@ -20,6 +20,8 @@ dependencies:
   flutter_secure_storage: ^11.0.0
   # Capturador rest
   http: ^1.2.0
+  # Libreria de widgets
+  getwidget: ^7.0.2
 
 dev_dependencies:
   flutter_test:
