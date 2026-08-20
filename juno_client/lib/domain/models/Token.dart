@@ -22,6 +22,7 @@ class Token {
     return Token(json['token'], json['refreshToken']);
   }
 
+  static Token empty() => Token('', '');
 
 
 }

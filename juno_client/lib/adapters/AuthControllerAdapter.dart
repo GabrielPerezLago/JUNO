@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:juno_client/adapters/ports/AuthControllerPort.dart';
 import 'package:juno_client/config/security/storage.security.dart';
 import 'package:juno_client/domain/entity/SESSION.dart';
@@ -5,30 +7,39 @@ import 'package:juno_client/infraestructure/services/AuthService.dart';
 
 class AuthControllerAdapter  {
   AuthControllerPort? _port;
+  BuildContext context;
+  final AuthService _service = AuthService();
+  final JunoTokenStorageRepository _tokenStorage = JunoTokenStorageRepository();
+  final SESSION _session = SESSION.instance;
 
-  final AuthService service = AuthService();
-  final JunoTokenStorageRepository tokenStorage = JunoTokenStorageRepository();
-  final SESSION session = SESSION.instance;
 
-
-  AuthControllerAdapter() {
+  AuthControllerAdapter({
+    required this.context
+  }) {
     _port = AuthControllerPort(
-      tokenStorage: this.tokenStorage, 
-      authService: this.service, 
-      session: this.session
+      tokenStorage: this._tokenStorage, 
+      authService: this._service, 
+      session: this._session
     );
   }
 
 
-  bool login({
+  Future<String> login({
     String email = '',
     String password= ''
-  }) {
-    bool finish = false ;
-    _port?.login(email, password)
-    .then((bool isFinish) => isFinish ? finish = true : finish = false);
+  }) async  {
+    String? errMsg = '';
+    bool? isFinish = await _port?.login(email, password);
+    if(isFinish!) {
+      errMsg = _session.nombre;
+      // context.go('home');
+      // return;
+    } else {
+      errMsg = 'Algun parametro no es valido';
+    }
+  
 
-    return finish;
+    return errMsg!;
   }
 
 

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:juno_client/adapters/AuthControllerAdapter.dart';
 import 'package:juno_client/config/app/app.tools.dart';
 import 'package:juno_client/config/theme/schemes/input.decoration.dart';
 import 'package:juno_client/config/theme/text/text.sheme.dart';
@@ -15,14 +18,28 @@ class LoginMovileLayout extends StatefulWidget {
 }
 
 class _LoginMovileState extends State<LoginMovileLayout> {
+
+    AuthControllerAdapter? authAdapter;
+
     bool isLoading = false;
     bool isRegistrer = false;
+    String? errString;
 
+    final emailImpController = TextEditingController();
+    final passwordImpController = TextEditingController();
+    final nombreImpController = TextEditingController();
+    final dniImpController = TextEditingController();
+    final repeatPasswordImpController = TextEditingController();
+
+    
 
 
 
   @override
-  Widget build(BuildContext context) => isLoading ? JnLogoLoder() :  Scaffold(
+  Widget build(BuildContext context) {
+    authAdapter = AuthControllerAdapter(context: context);
+    
+    return isLoading ? JnLogoLoder() :  Scaffold(
     body: SafeArea(
       child: SingleChildScrollView(
         padding: EdgeInsets.all(20),
@@ -66,20 +83,22 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                         ),),
                         
                         if (isRegistrer) JnInput(controller: 
-                          TextEditingController(), 
+                          nombreImpController, 
                           lblTextTittle: 'Nombre Completo',
                         ),
                         JnInput(
-                          controller: TextEditingController(), 
+                          controller: emailImpController, 
                           isOcutable: false, 
                           lblTextTittle: 'Email',
                         ),
                         JnInput(
-                          controller: TextEditingController(), 
+                          controller: passwordImpController, 
                           lblTextTittle: 'Contraseña'
                         ),
-                        if (isRegistrer) JnInput(controller: TextEditingController(), lblTextTittle: 'Repetir Contraseña'),
-                        if (isRegistrer) JnInput(controller: TextEditingController(), lblTextTittle: 'DNI'),
+                        if (isRegistrer) JnInput(controller: repeatPasswordImpController, lblTextTittle: 'Repetir Contraseña'),
+                        if (isRegistrer) JnInput(controller: dniImpController, lblTextTittle: 'DNI'),
+
+                        if(errString != null && errString!.isNotEmpty) Text(errString!, style: TextStyle( fontSize: width(context) * 0.01, color: junoColorScheme(context).error)),
 
                         /* BOTONES */
                         GFButton(
@@ -88,10 +107,8 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                           size: GFSize.LARGE,
                           text: isRegistrer ? 'Registrate' :'Iniciar Sesion' ,
                           color: junoColorScheme(context).primary,
-                          onPressed: () {
-                            setState(() {
-                              isLoading = true;
-                            });
+                          onPressed: () async {
+                            useLoging(emailImpController.text, passwordImpController.text);
                           },
                         ),
                         GFButton(
@@ -118,7 +135,33 @@ class _LoginMovileState extends State<LoginMovileLayout> {
         ),
       ),
   ));
+  }
 
   SizedBox _getSpaceSize() => SizedBox( height: height(context) * _getSpacingNumberSize(),);
   double _getSpacingNumberSize() => isRegistrer ? 0.05 : 0.1;
+
+  void useLoging(final String email, final String password) async {
+
+    if( email.isEmpty || password.isEmpty) setState(() {
+      errString = 'Los campos no pueden estar vacios ';
+      return;
+    });
+    
+    setState(() {
+      isLoading = true;
+    });
+
+    final String? loginProvider = await await authAdapter!.login(
+      email: emailImpController.text, 
+      password: passwordImpController.text
+    );
+
+    setState(() {
+      isLoading = false;
+      errString = loginProvider ?? 'Llego nulo';
+    });
+
+  }
+
+  
 } 
