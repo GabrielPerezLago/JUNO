@@ -12,4 +12,22 @@ class LoginController  {
       }
     }
   }
+
+
+  static void loginAndRegister(final Type type, final Map<String, String> params ) {
+
+  }
+}
+
+class Type {
+  String? type;
+
+  Type({
+    this.type = null
+  });
+
+  static final Type LOGIN = Type(type: 'login') ;
+  static final REGISTER = Type(type: 'registrer');
+
+  String? getType() => this.type!;
 }

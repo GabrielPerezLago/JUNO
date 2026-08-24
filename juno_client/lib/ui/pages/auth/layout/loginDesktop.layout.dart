@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:juno_client/adapters/AuthControllerAdapter.dart';
 import 'package:juno_client/config/app/app.tools.dart';
 import 'package:juno_client/ui/pages/auth/login.controller.dart';
 import 'package:juno_client/ui/widgets/inputs/juno_input.widget.dart';
@@ -14,6 +15,7 @@ class LoginDesktopLayout extends StatefulWidget {
 }
 
 class _LoginDesktopState extends State<LoginDesktopLayout> {
+  
   bool isRegistrer  = false;
   bool isLoading = false;
 
@@ -28,6 +30,8 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
   @override
   Widget build(BuildContext context) {
     
+    final AuthControllerAdapter authAdaper = AuthControllerAdapter(context: context);
+
     return isLoading ? JnLogoLoder() : Scaffold(
     backgroundColor: junoColorScheme(context).primaryFixed,
     body: Center(
@@ -91,21 +95,28 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                           GFButton(
+                          
                             text: _initSessionString(),
                             onPressed: (){
                               setState(() {
                                 isLoading = true;
                               });
-
-                              final String? msg = LoginController.validateLoginArgs({ 
+                              final params = { 
                                 'email': emailController.text,
                                 'password': passwordController.text
-                              });
+                              };
+                              final String? msg = LoginController.validateLoginArgs(params);
 
                               if (msg != null) setState(() {
                                 isLoading = false ;
                                 errMessage = msg!;
                               });
+
+
+                              LoginController.loginAndRegister(
+                               isRegistrer ? Type.REGISTER : Type.LOGIN, 
+                               params
+                              );
                             },
                             animationDuration: Duration(seconds: 4),
                             color: junoColorScheme(context).primary,
@@ -147,11 +158,13 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
       )),
     )
   );
+  
   }
 
   double _containerLoginSize() => width(context) == 800 ? width(context) * 0.8 : width(context) * 0.35 ;
   String _initSessionString() => isRegistrer ? 'Registrate' : 'Iniciar Sesión';
   SizedBox _spacingSize() => SizedBox(height: isRegistrer ? height(context) *  0.1 : height(context) * 0.001,);
-
   double _getInputSize() => width(context) * 0.5;
+
+  
 }
