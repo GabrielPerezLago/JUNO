@@ -14,6 +14,7 @@ abstract class JunoColorScheme {
     onError: Colors.white,
     surface: const Color(0xFFF8FAFC),
     onSurface: const Color(0xFF0F172A),
+    primaryFixed: const Color(0xFF3D3A96)
   );
 
 

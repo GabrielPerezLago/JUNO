@@ -8,7 +8,7 @@ import 'package:juno_client/config/app/app.tools.dart';
 import 'package:juno_client/config/theme/schemes/input.decoration.dart';
 import 'package:juno_client/config/theme/text/text.sheme.dart';
 import 'package:juno_client/domain/entity/SESSION.dart';
-import 'package:juno_client/ui/widgets/inputs/app_input.widget.dart';
+import 'package:juno_client/ui/widgets/inputs/juno_input.widget.dart';
 import 'package:juno_client/ui/widgets/loader/loader.widget.dart';
 
 class LoginMovileLayout extends StatefulWidget {
@@ -88,12 +88,12 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                         ),
                         JnInput(
                           controller: emailImpController, 
-                          isOcutable: false, 
                           lblTextTittle: 'Email',
                         ),
                         JnInput(
                           controller: passwordImpController, 
-                          lblTextTittle: 'Contraseña'
+                          lblTextTittle: 'Contraseña',
+                          isOcultable: true,
                         ),
                         if (isRegistrer) JnInput(controller: repeatPasswordImpController, lblTextTittle: 'Repetir Contraseña'),
                         if (isRegistrer) JnInput(controller: dniImpController, lblTextTittle: 'DNI'),

@@ -5,15 +5,15 @@ class JnLogoLoder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    color: Colors.blueGrey,
+    color: Colors.black,
     child: Stack(
       alignment: Alignment.center,
       children: [
         ClipOval(
           child: Image.asset(
             'assets/images/logo.png', 
-            width: width(context) * 0.1,
-            fit: BoxFit.cover
+            width: width(context) * 0.05,
+            fit: BoxFit.scaleDown
           ),
         ),
         Center(
