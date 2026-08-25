@@ -7,7 +7,7 @@ import 'package:juno_client/domain/models/Usuario.dart';
 import 'package:juno_client/infraestructure/repositories/AuthRepository.dart';
 
 class AuthService {
-  final _url_login = '/signin';
+  final _url_login = '/auth/signin';
   final AuthRepository repository = AuthRepository();
   
   Future<Token> login(final String email, final String password) async {
@@ -18,7 +18,7 @@ class AuthService {
 
       if (resp.statusCode == 200) {
         // capturamos el body 
-        final Map<String, dynamic> responseJson = jsonDecode(resp.body).orElseThrow(() => Exception("La captura del body no es correcta"));
+        final Map<String, dynamic> responseJson = jsonDecode(resp.body);
         return Token.fromJson(responseJson);
       } else {
         return Token.empty();

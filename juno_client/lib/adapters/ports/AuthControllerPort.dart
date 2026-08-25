@@ -2,7 +2,9 @@ import 'package:juno_client/config/security/storage.security.dart';
 import 'package:juno_client/domain/entity/SESSION.dart';
 import 'package:juno_client/domain/models/Token.dart';
 import 'package:juno_client/domain/models/Usuario.dart';
+import 'package:juno_client/domain/types/UserType.dart';
 import 'package:juno_client/infraestructure/services/AuthService.dart';
+import 'package:juno_client/uitls/DateTimeUtils.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthControllerPort {
@@ -30,6 +32,7 @@ class AuthControllerPort {
 
     _decodeTokenAndGetUsuario(token.getToken, saveInSession: true);
 
+    
     return await this.session.email != null;
 
     
@@ -47,24 +50,29 @@ class AuthControllerPort {
   Usuario _decodeTokenAndGetUsuario(final String token , {bool saveInSession = true}) {
     Map<String, dynamic> tokenDecoded = JwtDecoder.decode(token);
 
+    print("""
+      TOKEN DATE $tokenDecoded['nacimiento']
+    """);
+
     final usuario = Usuario(
-       id: tokenDecoded['id'],
+       id:  int.tryParse(tokenDecoded['jti']) ,
        nombre: tokenDecoded['nombre'],
        apellidos: tokenDecoded['apellidos'],
        dni: tokenDecoded['dni'],
-       email: tokenDecoded['subject'],
+       email: tokenDecoded['sub'],
        telefono: tokenDecoded['telefono'],
-       nacimiento: tokenDecoded['nacimiento'],
+       nacimiento: DateTimeUtils.parseStringToDate(tokenDecoded['nacimiento']) ,
        estado: tokenDecoded['estado'] == '' ? null: tokenDecoded['estado'],
-       rol: tokenDecoded['rol'] == '' ? 'USUARIO': tokenDecoded['rol'],
-       idCentro: tokenDecoded['id_centro'] == '' ? null : tokenDecoded['id_centro'],
-       idAula: tokenDecoded['id_aula'] == '' ? null : tokenDecoded['id_aula']
+       rol: tokenDecoded['rol'] == '' ? UserType.USUARIO: UserType.getUserTypeByParam(tokenDecoded['rol']),
+       idCentro: tokenDecoded['id_centro'] == '' ? null : tokenDecoded['id_centro'] as int,
+       idAula: tokenDecoded['id_aula'] == '' ? null : int.tryParse(tokenDecoded['id_aula'])
     );
 
     if (saveInSession) {
       this.session.usuarioSaveSession(usuario);
     }
 
+    print(session.email);
     return usuario;
   }
 

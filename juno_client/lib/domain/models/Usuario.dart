@@ -1,3 +1,5 @@
+import 'package:juno_client/domain/types/UserType.dart';
+
 class Usuario {
   int? id;
   String? nombre;
@@ -6,7 +8,7 @@ class Usuario {
   String? email;
   String? telefono;
   DateTime? nacimiento;
-  String? rol;
+  UserType? rol;
   String? estado;
   int? idCentro;
   int? idAula;

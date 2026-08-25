@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:juno_client/adapters/AuthControllerAdapter.dart';
 import 'package:juno_client/config/app/app.tools.dart';
 import 'package:juno_client/ui/pages/auth/login.controller.dart';
 import 'package:juno_client/ui/widgets/inputs/juno_input.widget.dart';
 import 'package:juno_client/ui/widgets/loader/loader.widget.dart';
+import 'package:juno_client/ui/widgets/wizard/error.wizard.dart';
 
 // ignore: must_be_immutable
 class LoginDesktopLayout extends StatefulWidget {
@@ -29,8 +29,7 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
 
   @override
   Widget build(BuildContext context) {
-    
-    final AuthControllerAdapter authAdaper = AuthControllerAdapter(context: context);
+  
 
     return isLoading ? JnLogoLoder() : Scaffold(
     backgroundColor: junoColorScheme(context).primaryFixed,
@@ -97,7 +96,7 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
                           GFButton(
                           
                             text: _initSessionString(),
-                            onPressed: (){
+                            onPressed: () async {
                               setState(() {
                                 isLoading = true;
                               });
@@ -107,16 +106,28 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
                               };
                               final String? msg = LoginController.validateLoginArgs(params);
 
-                              if (msg != null) setState(() {
-                                isLoading = false ;
-                                errMessage = msg!;
-                              });
+                              if (msg != null){ 
+                                setState(() {
+                                  isLoading = false ;
+                                  errMessage = msg!;
+                                });
+                                return;
+                              }
 
 
-                              LoginController.loginAndRegister(
-                               isRegistrer ? Type.REGISTER : Type.LOGIN, 
-                               params
+                              final String? isError = await LoginController.loginAndRegister(
+                                context,
+                                isRegistrer ? Type.REGISTER : Type.LOGIN, 
+                                params
                               );
+
+                              if (isError != null) {
+                                setState(() {
+                                  isLoading = false;
+                                  errMessage = null;
+                                });
+                                ErrorWizard.showError(context, isError);
+                              }
                             },
                             animationDuration: Duration(seconds: 4),
                             color: junoColorScheme(context).primary,

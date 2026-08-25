@@ -8,18 +8,22 @@ import 'package:juno_client/config/theme/JunoThemeProvider.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() {
-
-  final  windConf = WindowConfigProvider();
-
+  try {
+    final  windConf = WindowConfigProvider();
+    windConf.exectue().then((void window) { print('window');});
+  } catch (ex) {
+    print( 'Error Window Cofiguration : $ex');
+  }
   
-  windConf.exectue().then((void window) { print('window');});
-  HttpReqRepository.GET('/test')
-  .then((Response res) => res.statusCode == 200 ? print('Conexion Establecida') : print('Conexion NO Establecida') );
-
+  try {
+    HttpReqRepository.GET('/test')
+    .then((Response res) => res.statusCode == 200 ? print('Conexion Establecida') : print('Conexion NO Establecida') );
+  } catch (ex) {
+    print('Error al establecer conexion: $ex');
+  }
 
   runApp(const JunoClient());
 }
-
 class JunoClient extends StatelessWidget {
 
   const JunoClient({ super.key });

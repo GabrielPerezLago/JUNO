@@ -19,8 +19,6 @@ class LoginMovileLayout extends StatefulWidget {
 
 class _LoginMovileState extends State<LoginMovileLayout> {
 
-    AuthControllerAdapter? authAdapter;
-
     bool isLoading = false;
     bool isRegistrer = false;
     String? errString;
@@ -37,7 +35,6 @@ class _LoginMovileState extends State<LoginMovileLayout> {
 
   @override
   Widget build(BuildContext context) {
-    authAdapter = AuthControllerAdapter(context: context);
     
     return isLoading ? JnLogoLoder() :  Scaffold(
     body: SafeArea(
@@ -108,7 +105,7 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                           text: isRegistrer ? 'Registrate' :'Iniciar Sesion' ,
                           color: junoColorScheme(context).primary,
                           onPressed: () async {
-                            useLoging(emailImpController.text, passwordImpController.text);
+                           
                           },
                         ),
                         GFButton(
@@ -139,29 +136,6 @@ class _LoginMovileState extends State<LoginMovileLayout> {
 
   SizedBox _getSpaceSize() => SizedBox( height: height(context) * _getSpacingNumberSize(),);
   double _getSpacingNumberSize() => isRegistrer ? 0.05 : 0.1;
-
-  void useLoging(final String email, final String password) async {
-
-    if( email.isEmpty || password.isEmpty) setState(() {
-      errString = 'Los campos no pueden estar vacios ';
-      return;
-    });
-    
-    setState(() {
-      isLoading = true;
-    });
-
-    final String? loginProvider = await await authAdapter!.login(
-      email: emailImpController.text, 
-      password: passwordImpController.text
-    );
-
-    setState(() {
-      isLoading = false;
-      errString = loginProvider ?? 'Llego nulo';
-    });
-
-  }
 
   
 } 

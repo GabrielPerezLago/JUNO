@@ -7,7 +7,7 @@ import 'package:http/http.dart';
 abstract interface class HttpReqRepository {
   static final Duration TIME_OUT = Duration(seconds: 7);
 
-  static final String _API_URI = "http://100.120.82.46:8080/";
+  static final String _API_URI = "http://100.120.82.46:8080";
   static final appJsonHeader = {
         'Content-Type': 'application/json'
   };
@@ -15,6 +15,7 @@ abstract interface class HttpReqRepository {
 
   static Future<Response> GET(final String endpoint) async {
     try {
+      print('·$_API_URI$endpoint');
        return await get(
         Uri.parse('$_API_URI$endpoint'),
         headers: appJsonHeader
@@ -54,6 +55,7 @@ abstract interface class HttpReqRepository {
           }
         });
 
+        print(composedEndpoint);
 
         return await post(
           Uri.parse('$_API_URI$composedEndpoint'),

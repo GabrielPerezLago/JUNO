@@ -7,15 +7,12 @@ import 'package:juno_client/infraestructure/services/AuthService.dart';
 
 class AuthControllerAdapter  {
   AuthControllerPort? _port;
-  BuildContext context;
   final AuthService _service = AuthService();
   final JunoTokenStorageRepository _tokenStorage = JunoTokenStorageRepository();
   final SESSION _session = SESSION.instance;
 
 
-  AuthControllerAdapter({
-    required this.context
-  }) {
+  AuthControllerAdapter() {
     _port = AuthControllerPort(
       tokenStorage: this._tokenStorage, 
       authService: this._service, 
@@ -24,16 +21,14 @@ class AuthControllerAdapter  {
   }
 
 
-  Future<String> login({
+  Future<String?> login({
     String email = '',
     String password= ''
   }) async  {
     String? errMsg = '';
-    bool? isFinish = await _port?.login(email, password);
-    if(isFinish!) {
-      errMsg = _session.nombre;
-      // context.go('home');
-      // return;
+    bool? response = await _port?.login(email, password);
+    if(response!) {
+      return  null;
     } else {
       errMsg = 'Algun parametro no es valido';
     }
