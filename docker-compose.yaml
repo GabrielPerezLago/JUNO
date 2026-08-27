@@ -3,7 +3,7 @@ version: '3.8'
 services: 
   postgres:
     image: postgres:latest
-    container_name: juno
+    container_name: juno_db
     environment: 
       POSTGRES_USER: ${POSTGRES_DB_USER}
       POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
@@ -15,9 +15,8 @@ services:
       - "5432:5432"
 
   juno:
-    build:
-      context: .
-      dockerfile: ./juno_server/Dockerfile
+    image: juno-server:latest
+    container_name: juno_serv
     environment:
       - DB_URI=jdbc:postgresql://database:5432/${POSTGRES_DB}
       - POSTGRES_DB_USER=${POSTGRES_DB_USER}
