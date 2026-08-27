@@ -23,11 +23,11 @@ class LoginController  {
     //  tipo de la oparacion 
     if (type.getType() == 'LOGIN') {
       // respuesta del adaptador
-      final String? response = await _adapter!.login(
-        email: _getParam(params, 'email')!,
-        password: _getParam(params, 'password')!
-      );
-
+      // final String? response = await _adapter!.login(
+      //   email: _getParam(params, 'email')!,
+      //   password: _getParam(params, 'password')!
+      // );
+      final response = '';
       // Comprobacion e migracion
       if (response == null) {
         context.go('/home');

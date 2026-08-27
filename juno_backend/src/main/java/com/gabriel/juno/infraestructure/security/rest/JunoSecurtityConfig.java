@@ -34,7 +34,7 @@ public class JunoSecurtityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/juno/auth/**")
+                        req.requestMatchers("/auth/**", "/test")
                                 .permitAll() /* con esto permitimos todas las requestMarchesrs anteriroroes*/
                                 /*Con esto decimos que las demas request tengan que estar auntenticadas */
                                 .anyRequest()
@@ -44,7 +44,7 @@ public class JunoSecurtityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(
                         logout ->
-                                logout.logoutUrl("/juno/auth/logout")
+                                logout.logoutUrl("/auth/logout")
                                         .addLogoutHandler(
                                                 (request, response, authentication) -> {
                                                     final String authHeader = request.getHeader("Authorization");

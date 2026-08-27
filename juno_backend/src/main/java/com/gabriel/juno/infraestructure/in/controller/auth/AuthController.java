@@ -7,8 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @RestController
-@RequestMapping("/juno/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthServiceAdapter service;
@@ -23,9 +26,12 @@ public class AuthController {
             @RequestParam(name = "email") String email,
             @RequestParam(name = "password") String password
     ) {
-        return ResponseEntity
+        var resp = ResponseEntity
                 .status(200)
                 .body(service.login(email, password));
+        Logger.getLogger(resp.toString())
+                .log(Level.INFO, resp.getStatusCode().toString());
+        return resp;
     }
 
 }
