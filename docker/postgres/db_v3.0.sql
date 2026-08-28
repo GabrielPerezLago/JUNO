@@ -13,7 +13,7 @@ CREATE TABLE "juno"."usuario" (
                                   "apellidos" VARCHAR(500),
                                   "dni" VARCHAR(500) NOT NULL,
                                   "email" VARCHAR(500) NOT NULL,
-                                  "passsword" VARCHAR(500) NOT NULL,
+                                  "password" VARCHAR(500) NOT NULL,
                                   "telefono" VARCHAR(500),
                                 "nacimiento" DATE,
                                   PRIMARY KEY ("id")
@@ -145,6 +145,7 @@ CREATE TABLE "juno"."token" (
     "revoked" BOOLEAN NOT NULL,
     "expired" BOOLEAN NOT NULL,
     "id_usuario" INTEGER NOT NULL,
+    "tipo" VARCHAR(100),
     PRIMARY KEY ("id")
 );
 
