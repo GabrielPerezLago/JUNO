@@ -3,7 +3,7 @@ import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:juno_client/config/app/app.tools.dart';
 import 'package:juno_client/ui/pages/auth/login.controller.dart';
-import 'package:juno_client/ui/widgets/inputs/juno_input.widget.dart';
+import 'package:juno_client/ui/widgets/inputs/jninput.widget.dart';
 import 'package:juno_client/ui/widgets/loader/loader.widget.dart';
 import 'package:juno_client/ui/widgets/wizard/error.wizard.dart';
 
@@ -94,9 +94,10 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                           GFButton(
-                          
                             text: _initSessionString(),
                             onPressed: () async {
+
+
                               setState(() {
                                 isLoading = true;
                               });

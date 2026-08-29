@@ -73,8 +73,11 @@ class _JnInputState extends State<JnInput> {
   : null;
 
   TextStyle _lblDecoration() => TextStyle(
-    fontSize: width(context) * 0.01
+    fontSize: width(context) * _szByPlatform()
   );
+
+
+  double _szByPlatform() =>  isDesktop ? 0.01 : 0.03;
 }
 
 

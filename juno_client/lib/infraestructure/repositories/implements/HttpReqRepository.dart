@@ -6,8 +6,7 @@ import 'package:http/http.dart';
 
 abstract interface class HttpReqRepository {
   static final Duration TIME_OUT = Duration(seconds: 7);
-
-  static final String _API_URI = "http://100.120.82.46:8080";
+  static final String _API_URI = "https://juno.gabriel.living" /* http://localhost:8080*/ ; 
   static final appJsonHeader = {
         'Content-Type': 'application/json'
   };

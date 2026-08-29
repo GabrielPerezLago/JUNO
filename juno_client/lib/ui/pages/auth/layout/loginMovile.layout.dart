@@ -8,8 +8,10 @@ import 'package:juno_client/config/app/app.tools.dart';
 import 'package:juno_client/config/theme/schemes/input.decoration.dart';
 import 'package:juno_client/config/theme/text/text.sheme.dart';
 import 'package:juno_client/domain/entity/SESSION.dart';
-import 'package:juno_client/ui/widgets/inputs/juno_input.widget.dart';
+import 'package:juno_client/ui/pages/auth/login.controller.dart';
+import 'package:juno_client/ui/widgets/inputs/jninput.widget.dart';
 import 'package:juno_client/ui/widgets/loader/loader.widget.dart';
+import 'package:juno_client/ui/widgets/wizard/error.wizard.dart';
 
 class LoginMovileLayout extends StatefulWidget {
 
@@ -105,7 +107,40 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                           text: isRegistrer ? 'Registrate' :'Iniciar Sesion' ,
                           color: junoColorScheme(context).primary,
                           onPressed: () async {
-                           
+                            setState(() {
+                              isLoading = true;
+                            });
+
+                            final params = {
+                              'email': emailImpController.text,
+                              'password': passwordImpController.text
+                            };
+
+                            final msg = LoginController.validateLoginArgs(params);
+
+                            if (msg != null) {
+                              setState(() {
+                                isLoading = false;
+                                errString = msg!;
+                              });
+                              return;
+                            }
+
+
+                            final String? sign = await LoginController.loginAndRegister(
+                              context,
+                              isRegistrer ? Type.REGISTER : Type.LOGIN ,
+                              params
+                            );
+
+
+                            if(sign != null) {
+                              setState(() {
+                                isLoading = false;
+                                errString = null;
+                              });
+                              ErrorWizard.showError(context, sign);
+                            }
                           },
                         ),
                         GFButton(

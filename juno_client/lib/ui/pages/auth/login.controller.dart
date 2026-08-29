@@ -22,12 +22,14 @@ class LoginController  {
     _adapter = AuthControllerAdapter();
     //  tipo de la oparacion 
     if (type.getType() == 'LOGIN') {
-      // respuesta del adaptador
-      // final String? response = await _adapter!.login(
-      //   email: _getParam(params, 'email')!,
-      //   password: _getParam(params, 'password')!
-      // );
-      final response = '';
+      //respuesta del adaptador
+
+      
+      final String? response = await _adapter!.login(
+        email: _getParam(params, 'email')!,
+        password: _getParam(params, 'password')!
+      );
+
       // Comprobacion e migracion
       if (response == null) {
         context.go('/home');
