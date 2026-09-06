@@ -31,9 +31,11 @@ Juno es un proyecto orientado a la gestion de escuelas infatiles privadas, permi
    - MaterialDesign
    - GoRouter
 
-### Añadidos 
+### Deploy 
 - Docker 
   - docker-compose
+  - Dokploy
+- Cloudflare
 ---
 ---
 ---
@@ -41,10 +43,63 @@ Juno es un proyecto orientado a la gestion de escuelas infatiles privadas, permi
 
 Es necesario un archivo **.env** para levantar el beckend:
 
+- .env.example -> Incluye las variables de entorono necesarias en el sistema
+
+### Docker Compose 
+  El archivo *docker-compose.yaml* construye la aplicacion (Api Incluida ) contruyendo desde la base de codigo que se encuentre el el repositorio.
+
+
+## API 
+
+*JUNO* tambien cuenta con acceso a la api publica en al nuve pudiendo hacer peticiones HTTPS a la api desde cualquier lugar.
+
 
 ```
-POSTGRES_DB_USER= ** Usuario Base de datos Postgres **
-POSTGRES_DB_PASSWORD= ** Constraseña Postgres **
+https://juno.gabriel.living
+```
+
+#### TEST  
+ ```
+ https://juno.gabriel.living/test
+ ```
+
+
+### Documentacion 
+
+#### Auth
+
+| Method | Endpoint | Response | Error Response 
+|---|---|---|---| 
+| POST | /auth/signin | 200 | 403 |
+| POST | /auth/signup | 200 | 403 |
+
+##### Inicio de Sesión
+*Body Request*
+```
+{
+  "nombre": "example",
+  "apellidos": "example example",
+  "dni": "00000000F",
+  "email": "example@juno.es",
+  "password" : "example@.",
+  "telefono": "+34 222 444 555"
+}
+```
+*Campos añadidos*
+```
+{
+  "nacimiento" : "2025/03/05",
+  "idCentro": 1,
+  "idAula" 1,
+}
+```
+---
+*Response Body*
+```
+  {
+    token: "dasfsdfa..."
+    refreshToken: "ASD232DA...."
+  }
 ```
 
 

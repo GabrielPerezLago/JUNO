@@ -12,6 +12,13 @@ public class JunoApplicationInitializer {
         dotenv.entries().forEach(entry -> {
             System.setProperty(entry.getKey(), entry.getValue());
         });
+        System.out.println("""
+                               _ _   _ _  _  ____ \s
+                              | | | | | \\| |/ __ \\\s
+                           _  | | | | |  ` | |  | |
+                          | |_| | |_| | |\\  | |__| |
+                           \\___/ \\___/|_| \\_|\\____/
+                        """);
         SpringApplication.run(JunoApplicationInitializer.class, args);
     }
 
