@@ -3,6 +3,7 @@ package com.gabriel.juno.domain.models.auth;
 import com.gabriel.juno.domain.models.empleado.utils.Estado;
 import com.gabriel.juno.domain.models.empleado.utils.Rol;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
+import org.springframework.lang.Contract;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

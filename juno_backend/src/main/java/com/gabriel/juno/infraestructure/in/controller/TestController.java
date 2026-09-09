@@ -15,14 +15,12 @@ public class TestController {
     @GetMapping
     ResponseEntity getConexionCodeTest()  {
         Logger.getLogger(TestController.class.getName()).log(Level.INFO, "getConexionCodeTest");
-        return  ResponseEntity.status(200).body(new TestEntity("""
+        return  ResponseEntity.status(200).body("""
                                _ _   _ _  _  ____ \s
                               | | | | | \\| |/ __ \\\s
                            _  | | | | |  ` | |  | |
                           | |_| | |_| | |\\  | |__| |
                            \\___/ \\___/|_| \\_|\\____/
-                        """));
+                        """);
     }
-
-    private record TestEntity(String data){}
 }
