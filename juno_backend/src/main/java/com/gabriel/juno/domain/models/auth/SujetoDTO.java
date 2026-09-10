@@ -1,7 +1,9 @@
 package com.gabriel.juno.domain.models.auth;
 
+import com.gabriel.juno.domain.models.empleado.EmpleadoFullDTO;
 import com.gabriel.juno.domain.models.empleado.utils.Estado;
 import com.gabriel.juno.domain.models.empleado.utils.Rol;
+import com.gabriel.juno.domain.models.usuario.Usuario;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
 import org.springframework.lang.Contract;
 
@@ -46,6 +48,34 @@ public record SujetoDTO(
             Long idCentro
 ) {
 
+    public EmpleadoFullDTO transferToEmpleado() {
+        return new EmpleadoFullDTO.builder()
+                .nombre(this.nombre)
+                .apellidos(this.apellidos)
+                .dni(this.dni)
+                .email(this.email)
+                .password(this.password)
+                .telefono(this.telefono)
+                .nacimiento(this.nacimiento)
+                .rol(Rol.valueOf(this.rol.toString()))
+                .estado(Estado.valueOf(this.estado.toString()))
+                .idAula(this.idAula())
+                .idCentro(this.idCentro())
+                .build();
+    }
+
+    public Usuario transferToUsuario() {
+        return new Usuario.builder()
+                .nombre(this.nombre)
+                .apellidos(this.apellidos)
+                .dni(this.dni)
+                .email(this.email)
+                .password(this.password)
+                .telefono(this.telefono)
+                .nacimiento(this.nacimiento)
+                .build();
+
+    }
 
     public static class builder implements BuilderModelBase<SujetoDTO> {
 

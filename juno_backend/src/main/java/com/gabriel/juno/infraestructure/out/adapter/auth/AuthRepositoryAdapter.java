@@ -5,6 +5,8 @@ import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoEstadoExceptio
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoIsExistException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoRolException;
 import com.gabriel.juno.domain.models.token.TokenDataContainerDTO;
+import com.gabriel.juno.domain.models.token.exception.InvalidTokenException;
+import com.gabriel.juno.domain.models.token.tools.TokenType;
 import com.gabriel.juno.domain.models.usuario.Usuario;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioException;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioIsExistException;
@@ -27,6 +29,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.StringReader;
+
 @Slf4j
 @Component
 @AllArgsConstructor
@@ -40,18 +44,28 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
     private final EstadoEmpleadoJpaRepository estadoEmpleadoRepository;
     private final EmpleadoRolJpaRepository rolEmpleadoRepository;
 
+    /**
+     *
+     * @param email
+     * @param password
+     * Metodo que loguea al uusuario dependiendo de si es un empeleado o un usuario enviando el Token Correspondiente
+     * @return {@link TokenDataContainerDTO}
+     */
     @Override
     public TokenDataContainerDTO login(String email, String password) {
+
+        /* Comprobamos si el usuario existe */
+        var usuarioEntity = usuarioRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsuarioNotExistException(email));
+
         /* Auth de Spring */
         authManager.authenticate(new UsernamePasswordAuthenticationToken(
            email,
            password
         ));
 
-        /* Comprobamos si el usuario existe */
-        var usuarioEntity = usuarioRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new UsuarioNotExistException(email));
+
 
         /* Comprobamos si es un empleado */
         var empleadoEntity = empleadoRepository
@@ -89,7 +103,6 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
             Guardamos los nuevos tokens
         */
         this.saveToken(token, usuarioEntity);
-        this.saveRefreshToken(refreshToken, usuarioEntity);
 
 
         /*
@@ -100,10 +113,40 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
     }
 
     @Override
-    public TokenDataContainerDTO loginByToken(String token) {
-        return null;
+    public TokenDataContainerDTO loginByToken(final String refreshToken) {
+        if (refreshToken == null || !refreshToken.startsWith("Bearer ")) {
+            throw new InvalidTokenException("El token enviado no es valido");
+        }
+
+        final String tokenData = refreshToken.substring(7);
+        final String usuarioEmail = jwtService.estractUserName(tokenData);
+
+        if (usuarioEmail == null) {
+            throw new InvalidTokenException("El token no es valido");
+        }
+
+        final var usuario = usuarioRepository.findByEmail(usuarioEmail)
+                .orElseThrow(() -> new UsuarioNotExistException("El usuario del token enviado no existe"));
+
+        if(!jwtService.validateTokenByUser(tokenData, usuario.transferToUsuario())) {
+            throw new  InvalidTokenException("El token esta expirado o no es valido");
+        }
+
+        final String newToken = jwtService.generateToken(usuario.transferToSujetoDTO());
+        final String newRefreshToken = jwtService.generateRefreshToken(usuario.transferToSujetoDTO());
+        jwtService.revokeUserTokens(usuario.transferToUsuario());
+        saveToken(newToken, usuario);
+        return new TokenDataContainerDTO.builder()
+                .token(newToken)
+                .refreshToken(newRefreshToken)
+                .build();
     }
 
+    /**
+     * @param empleadoFullDTO
+     * Metodo que registra un empleado
+     * @return {@link TokenDataContainerDTO}
+     */
     @Override
     public TokenDataContainerDTO registerEmpleado(EmpleadoFullDTO empleadoFullDTO) {
         /* Comporbamos que el USUARIO NO EXISTA */
@@ -135,7 +178,6 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
 
         /* Guardamos Tokens en Base de datos */
         saveToken(token, usuarioEntity);
-        saveRefreshToken(refreshToken, usuarioEntity);
 
         /* Damos de alta al EMPELAADO */
         EmpleadoEntity empleadoEnt = empleadoRepository.saveAndFlush(EmpleadoEntity.builder()
@@ -152,6 +194,11 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
 
     }
 
+    /**
+     * @param usuario
+     * Metodo que registra un usuario
+     * @return {@link TokenDataContainerDTO}
+     */
     @Override
     public TokenDataContainerDTO registerUsuario(Usuario usuario) {
         /* Comporbamos que NO EXISTA el usuario */
@@ -181,7 +228,6 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
 
         /*Gusrdamos el token en base de datos */
         saveToken(token , usuarioEntitySave);
-        saveRefreshToken(refreshToken, usuarioEntitySave);
 
         /*Retornamos Tokens */
         return new TokenDataContainerDTO.builder()
@@ -204,19 +250,9 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
                     .revoked(false)
                     .expired(false)
                     .usuario(usuario)
+                    .tokenType(TokenType.BEARER)
                     .build();
          tokenRepository.save(tk);
     }
 
-    @Async
-    public void saveRefreshToken(String token, UsuarioEntity usuario) {
-        tokenRepository
-                .save(TokenEntity.builder()
-                        .token(token)
-                        .revoked(false)
-                        .expired(false)
-                        .tokenType(null)
-                        .usuario(usuario)
-                        .build());
-    }
 }

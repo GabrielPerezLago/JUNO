@@ -1,5 +1,6 @@
 package com.gabriel.juno.infraestructure.out.persistance.entities.usuario;
 
+import com.gabriel.juno.domain.models.token.tools.TokenType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,9 +12,6 @@ import lombok.*;
 @Table(schema = "juno", name = "token")
 public class TokenEntity {
 
-    public enum TokenType {
-        BEARER
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

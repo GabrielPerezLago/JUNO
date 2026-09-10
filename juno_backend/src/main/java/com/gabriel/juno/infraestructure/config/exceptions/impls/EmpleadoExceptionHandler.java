@@ -1,40 +1,25 @@
-package com.gabriel.juno.infraestructure.config.exceptions;
+package com.gabriel.juno.infraestructure.config.exceptions.impls;
 
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoEstadoException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoIsExistException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoNotExistException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoRolException;
-import org.springframework.data.repository.init.RepositoriesPopulatedEvent;
+import com.gabriel.juno.infraestructure.config.exceptions.JnExeptionsHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.net.http.HttpClient;
-import java.time.LocalDateTime;
 
-@RestControllerAdvice
-public class EmpleadoExceptionService {
+public class EmpleadoExceptionHandler extends JnExeptionsHandler {
 
-    private record EmpleadoExcetionResponse(
-            String errorMessage,
-            Integer statusCode,
-            String error,
-            LocalDateTime timestamp
-    ) {
-        public  EmpleadoExcetionResponse(String errorMessage, Integer statusCode, String error) {
-            this(
-                    errorMessage,statusCode,error, LocalDateTime.now()
-            );
-        }
-    }
+
 
 
     @ExceptionHandler(EmpleadoRolException.class)
-    public ResponseEntity<EmpleadoExcetionResponse> handlerRolException(EmpleadoRolException ex) {
+    public ResponseEntity<ErrorResponse> handlerRolException(EmpleadoRolException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new EmpleadoExcetionResponse(
+                .body(new ErrorResponseCode(
                         ex.getMessage(),
                         400,
                         "Rol de empleado no valido"
@@ -42,10 +27,10 @@ public class EmpleadoExceptionService {
     }
 
     @ExceptionHandler(EmpleadoEstadoException.class)
-    public ResponseEntity<EmpleadoExcetionResponse> handlerEstadoException(EmpleadoEstadoException ex) {
+    public ResponseEntity<ErrorResponse> handlerEstadoException(EmpleadoEstadoException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new EmpleadoExcetionResponse(
+                .body(new ErrorResponseCode(
                         ex.getMessage(),
                         400,
                         "Estado del empleado no valido"
@@ -53,10 +38,10 @@ public class EmpleadoExceptionService {
     }
 
     @ExceptionHandler(EmpleadoNotExistException.class)
-    public ResponseEntity<EmpleadoExcetionResponse> handlerNotExistException(EmpleadoNotExistException ex) {
+    public ResponseEntity<ErrorResponse> handlerNotExistException(EmpleadoNotExistException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(new EmpleadoExcetionResponse(
+                .body(new ErrorResponseCode(
                         ex.getMessage(),
                         401,
                         "Empleado no existente"
@@ -64,10 +49,10 @@ public class EmpleadoExceptionService {
     }
 
     @ExceptionHandler(EmpleadoIsExistException.class)
-    public ResponseEntity<EmpleadoExcetionResponse> handlerIsExistException(EmpleadoIsExistException ex) {
+    public ResponseEntity<ErrorResponse> handlerIsExistException(EmpleadoIsExistException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(new EmpleadoExcetionResponse(
+                .body(new ErrorResponseCode(
                         ex.getMessage(),
                         401,
                         "Empleado existente"

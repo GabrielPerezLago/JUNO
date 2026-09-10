@@ -1,7 +1,11 @@
 package com.gabriel.juno.domain.port.token;
 
 import com.gabriel.juno.domain.models.auth.SujetoDTO;
+import com.gabriel.juno.domain.models.token.Token;
+import com.gabriel.juno.domain.models.token.TokenDataContainerDTO;
 import com.gabriel.juno.domain.models.usuario.Usuario;
+
+import java.util.Date;
 
 public abstract class TokenComposerPort {
 
@@ -28,7 +32,7 @@ public abstract class TokenComposerPort {
      * Metood que valida el token que el usuario a pasado
      * @return Boolean
      */
-    public abstract Boolean validateToken(final String token, final Usuario usuario);
+    public abstract Boolean validateTokenByUser(final String token, final Usuario usuario);
 
 
     /**
@@ -51,4 +55,6 @@ public abstract class TokenComposerPort {
      * Metodo que desabilita el uso de todos los tokens del usuario
      */
     protected abstract void revokeAllUserTokens(final Usuario usuario);
+
+    protected abstract Date extractExpiration(final String token);
 }

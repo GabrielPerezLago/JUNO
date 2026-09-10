@@ -1,32 +1,21 @@
-package com.gabriel.juno.infraestructure.config.exceptions;
+package com.gabriel.juno.infraestructure.config.exceptions.impls;
 
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioArgsException;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioIsExistException;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioNotExistException;
+import com.gabriel.juno.infraestructure.config.exceptions.JnExeptionsHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
 
 @RestControllerAdvice
-public class UsuarioExceptionsService {
-
-    private record UsuarioErrorResponse(
-            String errMessage,
-            Integer statusCode,
-            String error,
-            LocalDateTime timestamp
-    ){
-        public UsuarioErrorResponse(String errMessage, Integer statusCode, String error) {
-            this(errMessage, statusCode, error, LocalDateTime.now());
-        }
-    }
+public class UsuarioExceptionsHandler extends JnExeptionsHandler {
 
     @ExceptionHandler(UsuarioIsExistException.class)
-    public ResponseEntity<UsuarioErrorResponse> handleIsExistUsuario(UsuarioIsExistException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new UsuarioErrorResponse(
+    public ResponseEntity<ErrorResponse> handleIsExistUsuario(UsuarioIsExistException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseCode(
            ex.getMessage(),
            401,
                 "Acceso Denegado"
@@ -35,10 +24,10 @@ public class UsuarioExceptionsService {
 
 
     @ExceptionHandler(UsuarioNotExistException.class)
-    public ResponseEntity<UsuarioErrorResponse> handleNotExistUsuario(UsuarioNotExistException ex) {
+    public ResponseEntity<ErrorResponse> handleNotExistUsuario(UsuarioNotExistException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(new UsuarioErrorResponse(
+                .body(new ErrorResponseCode(
                   ex.getMessage(),
                   401,
                   "Acceso denegado"
@@ -47,10 +36,10 @@ public class UsuarioExceptionsService {
 
 
     @ExceptionHandler(UsuarioArgsException.class)
-    public ResponseEntity<UsuarioErrorResponse> handleUsuarioArgs(UsuarioArgsException ex) {
+    public ResponseEntity<ErrorResponse> handleUsuarioArgs(UsuarioArgsException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new UsuarioErrorResponse(
+                .body(new ErrorResponseCode(
                         ex.getMessage(),
                         400,
                         "Parametros no validos o erroneos"

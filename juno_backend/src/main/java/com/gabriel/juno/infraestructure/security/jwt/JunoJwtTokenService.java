@@ -2,6 +2,8 @@ package com.gabriel.juno.infraestructure.security.jwt;
 
 
 import com.gabriel.juno.domain.models.auth.SujetoDTO;
+import com.gabriel.juno.domain.models.token.TokenDataContainerDTO;
+import com.gabriel.juno.domain.models.token.exception.InvalidTokenException;
 import com.gabriel.juno.domain.models.usuario.Usuario;
 import com.gabriel.juno.domain.port.token.TokenComposerPort;
 import com.gabriel.juno.infraestructure.out.persistance.entities.usuario.TokenEntity;
@@ -10,7 +12,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +49,8 @@ public class JunoJwtTokenService
         this.tokenJpaRepository = tokenJpaRepository;
     }
 
+
+
     @Override
     public String generateToken(final SujetoDTO sujeto) {
         return tokenComposser(sujeto, expiration);
@@ -60,21 +63,53 @@ public class JunoJwtTokenService
     }
 
     @Override
-    public Boolean validateToken(String token, Usuario usuario) {
+    public Boolean validateTokenByUser(String token, Usuario usuario) {
         var username = extractUsernameToToken(token);
-        return username.equals(usuario.email());
+
+        return username.equals(usuario.email()) && !isExpiredToken(token);
 
     }
 
+    /**
+     * @param token
+     *
+     * Metodo que devuelve el username (subject) del token
+     *
+     * @return {@link String}
+     */
     public String estractUserName(final String token) {
-        return estractUserName(token);
+        return extractUsernameToToken(token);
     }
 
+    public  Boolean isExpiredToken(final String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    /**
+     * @param usuario
+     * Metodo que desavilita los tokens del usuario como parametro
+     */
     @Override
     public void revokeUserTokens(Usuario usuario) {
         this.revokeAllUserTokens(usuario);
     }
 
+
+    @Override
+    protected Date extractExpiration(String token) {
+        Claims jwtToken = Jwts.parser()
+                .verifyWith(getSignInKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return jwtToken.getExpiration();
+    }
+
+    /**
+     * @param token
+     * Metodo que extrae el username principal del token recibido
+     * @return {@link String}
+     */
     @Override
     protected String extractUsernameToToken(String token) {
         Claims jwtClaimToken = Jwts.parser()
@@ -85,6 +120,11 @@ public class JunoJwtTokenService
         return jwtClaimToken.getSubject();
     }
 
+    /**
+     * @param usuario
+     *
+     * Metodo que desabilita el uso de todos los tokens del usuario , los captura y si tiene tokens los desavilita TODOS
+     */
     @Override
     protected void revokeAllUserTokens(final Usuario usuario) {
         final List<TokenEntity> validUserTokens = tokenJpaRepository
@@ -101,6 +141,14 @@ public class JunoJwtTokenService
         tokenJpaRepository.saveAll(validUserTokens);
     }
 
+    /**
+     *
+     * @param sujeto
+     * @param expiration
+     *
+     * Metodo que genera un token mediante un usuario y con un nivel de expiracion
+     * @return
+     */
     @Override
     protected String tokenComposser(final SujetoDTO sujeto, final Long expiration) {
         return Jwts.builder()

@@ -1,5 +1,6 @@
 package com.gabriel.juno.domain.models.token;
 
+import com.gabriel.juno.domain.models.token.tools.TokenType;
 import com.gabriel.juno.domain.utils.modeluitls.BuilderModelBase;
 
 public record Token(
@@ -7,8 +8,12 @@ public record Token(
         String token,
         Boolean revoked,
         Boolean expired,
-        Long idUsuario
+        Long idUsuario,
+        TokenType type
 ) {
+    public Token(Long id, String token, Boolean revoked, Boolean expired, Long idUsuario ){
+        this(id, token, revoked, expired, idUsuario, TokenType.BEARER);
+    }
     public static class builder implements BuilderModelBase<Token> {
 
         private Long id;
