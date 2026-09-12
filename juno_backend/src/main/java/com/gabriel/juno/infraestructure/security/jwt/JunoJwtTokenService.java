@@ -13,6 +13,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -66,8 +67,13 @@ public class JunoJwtTokenService
     public Boolean validateTokenByUser(String token, Usuario usuario) {
         var username = extractUsernameToToken(token);
 
-        return username.equals(usuario.email()) && !isExpiredToken(token);
+        return username.equals(usuario.email());
+    }
 
+    public Boolean validateTokenByUser(String token, Usuario usuario, boolean checkExpired) {
+        var username = extractUsernameToToken(token);
+
+        return checkExpired ? username.equals(usuario.email()) && !isExpiredToken(token) : username.equals(usuario.email());
     }
 
     /**

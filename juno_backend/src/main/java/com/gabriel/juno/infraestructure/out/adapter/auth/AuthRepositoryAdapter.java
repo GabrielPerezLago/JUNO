@@ -5,6 +5,7 @@ import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoEstadoExceptio
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoIsExistException;
 import com.gabriel.juno.domain.models.empleado.exceptions.EmpleadoRolException;
 import com.gabriel.juno.domain.models.token.TokenDataContainerDTO;
+import com.gabriel.juno.domain.models.token.exception.ExpiredTokenException;
 import com.gabriel.juno.domain.models.token.exception.InvalidTokenException;
 import com.gabriel.juno.domain.models.token.tools.TokenType;
 import com.gabriel.juno.domain.models.usuario.Usuario;
@@ -58,16 +59,12 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
         var usuarioEntity = usuarioRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new UsuarioNotExistException(email));
-
         /* Auth de Spring */
         authManager.authenticate(new UsernamePasswordAuthenticationToken(
            email,
            password
         ));
 
-
-
-        /* Comprobamos si es un empleado */
         var empleadoEntity = empleadoRepository
                 .findById(usuarioEntity.getId())
                 .orElse(null);
@@ -75,15 +72,11 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
         String token;
         String refreshToken;
 
-        /*
-            Generamos token dependiendo si es un usuario o un empleado
-        */
         if (empleadoEntity == null) {
             token = jwtService.generateToken(usuarioEntity
                     .transferToSujetoDTO());
             refreshToken = jwtService.generateRefreshToken(usuarioEntity
                     .transferToSujetoDTO());
-
         } else {
             token = jwtService
                     .generateToken(empleadoEntity
@@ -93,21 +86,10 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
                     .trasferToSujetoDTO());
         }
 
-        /*
-            Revocamos los tokens existentes
-        */
         jwtService.revokeUserTokens(usuarioEntity
                 .transferToUsuario());
-
-        /*
-            Guardamos los nuevos tokens
-        */
         this.saveToken(token, usuarioEntity);
 
-
-        /*
-            Retornamos los Tokens
-         */
         return new TokenDataContainerDTO(token, refreshToken);
 
     }
@@ -128,6 +110,9 @@ public class AuthRepositoryAdapter implements AuthRepositoryPort {
         final var usuario = usuarioRepository.findByEmail(usuarioEmail)
                 .orElseThrow(() -> new UsuarioNotExistException("El usuario del token enviado no existe"));
 
+        if (jwtService.isExpiredToken(tokenData)) {
+            throw new ExpiredTokenException();
+        }
         if(!jwtService.validateTokenByUser(tokenData, usuario.transferToUsuario())) {
             throw new  InvalidTokenException("El token esta expirado o no es valido");
         }

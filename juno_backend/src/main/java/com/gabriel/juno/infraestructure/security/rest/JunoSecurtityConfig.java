@@ -3,6 +3,8 @@ package com.gabriel.juno.infraestructure.security.rest;
 import com.gabriel.juno.domain.models.token.exception.TokenException;
 import com.gabriel.juno.infraestructure.out.persistance.repositories.usuario.TokenJpaRepository;
 import com.gabriel.juno.infraestructure.security.filters.JwtAuthFilter;
+import com.gabriel.juno.infraestructure.security.filters.SignInFilter;
+import com.gabriel.juno.infraestructure.security.filters.SignUpFilter;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +27,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class JunoSecurtityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final TokenJpaRepository tokenJpaRepository;
+    private final JwtAuthFilter jwtAuthFilter;
+    private final SignInFilter signInFilter;
+    private final SignUpFilter signUpFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,6 +46,8 @@ public class JunoSecurtityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(signUpFilter, JwtAuthFilter.class)
+                .addFilterBefore(signInFilter, SignUpFilter.class)
                 .logout(
                         logout ->
                                 logout.logoutUrl("/auth/logout")
@@ -54,6 +60,7 @@ public class JunoSecurtityConfig {
                                                 (request, response, authentication) ->
                                                         SecurityContextHolder.clearContext())
                 );
+
         return http.build();
     }
 
