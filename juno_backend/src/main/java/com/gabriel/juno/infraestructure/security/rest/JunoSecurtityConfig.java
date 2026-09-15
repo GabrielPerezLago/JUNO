@@ -46,8 +46,8 @@ public class JunoSecurtityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(signUpFilter, JwtAuthFilter.class)
-                .addFilterBefore(signInFilter, SignUpFilter.class)
+                .addFilterBefore(signInFilter, JwtAuthFilter.class)
+                .addFilterAfter(signUpFilter, SignInFilter.class)
                 .logout(
                         logout ->
                                 logout.logoutUrl("/auth/logout")

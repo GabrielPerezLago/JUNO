@@ -4,14 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gabriel.juno.domain.models.usuario.exception.UsuarioArgsException;
 import com.gabriel.juno.infraestructure.config.exceptions.JnExeptionsHandler;
 import com.gabriel.juno.infraestructure.security.filters.implement.auth.JnAuthFilterProvider;
+import com.gabriel.juno.infraestructure.spring.uitls.resquest.RequestBodyContentWrapper;
+import com.gabriel.juno.infraestructure.spring.uitls.resquest.RequestBodyInputStreamWrapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Component
 public class SignInFilter extends JnAuthFilterProvider {
@@ -26,18 +30,31 @@ public class SignInFilter extends JnAuthFilterProvider {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if("/auth/signin".equals(request.getServletPath()) || "POST".equalsIgnoreCase(request.getMethod())) {
+        if("/auth/signin".equals(request.getServletPath()) && "POST".equalsIgnoreCase(request.getMethod())) {
             final String email = request.getParameter("email");
+            final String password = request.getParameter("password");
 
             if (email == null || !email.contains("@")) {
                 final ErrorResponseMapperCode errMapper = new ErrorResponseMapperCode(
                         new UsuarioArgsException("El email no es valido").getMessage(),
                         401,
-                        "Parametros de usuario no validos"
+                        "Parametros de Usuario no validos"
                 );
                 sendResponse(response, errMapper, objectMapper);
                 return;
             }
+
+            if (password == null) {
+                final ErrorResponseMapperHttpStatus exceptionHandled = new ErrorResponseMapperHttpStatus(
+                        new UsuarioArgsException("La contraseña no puede estar vacía").getMessage(),
+                        HttpStatus.UNAUTHORIZED,
+                        "Parametros de Usuario no validos"
+                );
+
+                sendResponse(response, exceptionHandled, objectMapper);
+                return;
+            }
+
         }
         filterChain.doFilter(request,response);
     }

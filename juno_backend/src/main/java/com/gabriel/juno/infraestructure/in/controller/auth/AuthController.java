@@ -23,7 +23,9 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<TokenDataContainerDTO> signup(@RequestBody SujetoDTO sujeto) {
-        return ResponseEntity.status(200).body(service.singup(sujeto));
+        return ResponseEntity
+                .status(200)
+                .body(service.singup(sujeto));
     }
 
     @PostMapping("/signin")

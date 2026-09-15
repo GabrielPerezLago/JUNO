@@ -7,28 +7,28 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
-public class JnExeptionsHandler {
+public abstract class JnExeptionsHandler {
 
     protected interface ErrorResponse{};
     protected record ErrorResponseCode (
-            String exception,
+            String message,
             Integer StatusCode,
             String error,
             LocalDateTime timeStamp
     ) implements  ErrorResponse {
-        public ErrorResponseCode(String exception, Integer statusCode, String error) {
-            this(exception, statusCode, error, LocalDateTime.now());
+        public ErrorResponseCode(String message, Integer statusCode, String error) {
+            this(message, statusCode, error, LocalDateTime.now());
         };
     }
 
     protected record ErrorResponseHttpStatus(
-            String exception,
+            String message,
             HttpStatus statusCode,
             String error,
             LocalDateTime timeStamp
     ) implements  ErrorResponse {
-        public ErrorResponseHttpStatus(String exception, HttpStatus statusCode, String error) {
-            this(exception, statusCode, error, LocalDateTime.now());
+        public ErrorResponseHttpStatus(String message, HttpStatus statusCode, String error) {
+            this(message, statusCode, error, LocalDateTime.now());
         }
     }
 }

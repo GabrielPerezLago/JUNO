@@ -1,5 +1,6 @@
 package com.gabriel.juno.infraestructure.security.filters.implement.auth;
 
+import com.gabriel.juno.infraestructure.config.exceptions.JnExeptionsHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -10,18 +11,18 @@ import java.time.LocalDateTime;
 
 public abstract class JnAuthFilterProvider extends OncePerRequestFilter {
 
-    public  interface ErrorResponseMapper {
+    public interface ErrorResponseMapper {
         Object getStatus();
     }
 
     protected record ErrorResponseMapperCode(
-            String exception,
+            String message,
             Integer statusCode,
             String error,
             LocalDateTime timeStamp
     )  implements ErrorResponseMapper {
-        public ErrorResponseMapperCode(String exception, Integer statusCode, String error) {
-            this(exception, statusCode, error, LocalDateTime.now());
+        public ErrorResponseMapperCode(String message, Integer statusCode, String error) {
+            this(message, statusCode, error, LocalDateTime.now());
         }
 
         @Override
@@ -31,13 +32,13 @@ public abstract class JnAuthFilterProvider extends OncePerRequestFilter {
     }
 
     protected record ErrorResponseMapperHttpStatus(
-            String exception,
+            String message,
             HttpStatus statusCode,
             String error,
             LocalDateTime timeStamp
     ) implements ErrorResponseMapper {
-        public ErrorResponseMapperHttpStatus(String exception, HttpStatus httpStatus, String error) {
-            this(exception, httpStatus, error, LocalDateTime.now());
+        public ErrorResponseMapperHttpStatus(String message, HttpStatus httpStatus, String error) {
+            this(message, httpStatus, error, LocalDateTime.now());
         }
 
         @Override
