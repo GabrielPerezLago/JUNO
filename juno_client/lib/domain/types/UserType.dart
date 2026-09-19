@@ -1,4 +1,3 @@
-import 'package:juno_client/domain/models/Usuario.dart';
 
 class UserType {
   final String type;

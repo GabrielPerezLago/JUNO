@@ -37,17 +37,17 @@ class SESSION {
 
 
   void usuarioSaveSession(final Usuario usuario){
-    _id = usuario.id ?? null;
-    nombre = usuario.nombre ?? null;
-    apellidos = usuario.apellidos ?? null;
-    dni = usuario.dni ?? null;
-    email = usuario.email ?? null;
-    telefono = usuario.telefono ?? null;
-    nacimiento = usuario.nacimiento ?? null;
-    rol = usuario.rol ?? null;
-    estado = usuario.estado ?? null;
-    idCentro = usuario.idCentro ?? null;
-    idAula = usuario.idAula ?? null;
+    _id = usuario.id;
+    nombre = usuario.nombre;
+    apellidos = usuario.apellidos;
+    dni = usuario.dni;
+    email = usuario.email;
+    telefono = usuario.telefono;
+    nacimiento = usuario.nacimiento;
+    rol = usuario.rol;
+    estado = usuario.estado;
+    idCentro = usuario.idCentro;
+    idAula = usuario.idAula;
   }
 
   SESSION._internal();

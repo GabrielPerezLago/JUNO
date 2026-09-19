@@ -11,7 +11,7 @@ class LoginViewPage extends StatefulWidget {
   });
 
 @override
-  State<StatefulWidget> createState() => _LoginViewState(scene: this.child);
+  State<StatefulWidget> createState() => _LoginViewState(scene: child);
 
 }
 
@@ -21,6 +21,6 @@ class _LoginViewState extends State<LoginViewPage> {
   _LoginViewState({required this.scene}); 
 
   @override
-  Widget build(BuildContext context) => this.scene;
+  Widget build(BuildContext context) => scene;
 
 }

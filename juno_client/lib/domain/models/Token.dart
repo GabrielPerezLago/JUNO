@@ -13,8 +13,8 @@ class Token {
     _refreshToken = token;
   }
 
-  get getToken => _token;
-  get getRefreshToken => _refreshToken;
+  String get getToken => _token;
+  String get getRefreshToken => _refreshToken;
   void setToken(String token) => _token = token; 
   void setRefreshToken(String refreshToken) => _refreshToken = refreshToken;
 

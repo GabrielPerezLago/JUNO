@@ -4,7 +4,7 @@ import 'package:juno_client/config/app/app.tools.dart';
 class ErrorWizard  extends StatelessWidget {
   String errString;
 
-  ErrorWizard({
+  ErrorWizard({super.key, 
     required this.errString
   });
 
@@ -13,7 +13,7 @@ class ErrorWizard  extends StatelessWidget {
     shadowColor: junoColorScheme(context).secondary,
     alignment: Alignment.center,
     backgroundColor: junoColorScheme(context).inversePrimary,
-    child: Container(
+    child: SizedBox(
       width: width(context) * 0.6,
       height: height(context) * 0.6,
       child: Column(
@@ -44,7 +44,7 @@ class ErrorWizard  extends StatelessWidget {
       )
     ));
 
-  static showError( final BuildContext context, final String error) {
+  static Future<dynamic> showError( final BuildContext context, final String error) {
     return showDialog(context: context, builder: (context) {
       return ErrorWizard(errString: error);
     });

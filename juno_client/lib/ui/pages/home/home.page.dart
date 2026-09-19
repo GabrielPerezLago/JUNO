@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class HomePage extends StatefulWidget {
   final Widget child;
 
-  HomePage({
+  const HomePage({super.key, 
     required this.child
   });
 
@@ -21,6 +21,6 @@ class _HomePageState extends State<HomePage> {
   });
 
   @override
-  Widget build(BuildContext context) => this.scene;
+  Widget build(BuildContext context) => scene;
 
 }

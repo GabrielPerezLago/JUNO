@@ -3,17 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:juno_client/adapters/AuthControllerAdapter.dart';
+import 'package:juno_client/infraestructure/adapters/AuthAdapter.dart';
 import 'package:juno_client/config/app/app.tools.dart';
 import 'package:juno_client/config/theme/schemes/input.decoration.dart';
 import 'package:juno_client/config/theme/text/text.sheme.dart';
-import 'package:juno_client/domain/entity/SESSION.dart';
 import 'package:juno_client/ui/pages/auth/login.controller.dart';
 import 'package:juno_client/ui/widgets/inputs/jninput.widget.dart';
 import 'package:juno_client/ui/widgets/loader/loader.widget.dart';
 import 'package:juno_client/ui/widgets/wizard/error.wizard.dart';
 
 class LoginMovileLayout extends StatefulWidget {
+  const LoginMovileLayout({super.key});
+
 
     @override
   State<StatefulWidget> createState() => _LoginMovileState();
@@ -116,7 +117,7 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                               'password': passwordImpController.text
                             };
 
-                            final msg = LoginController.validateLoginArgs(params);
+                            final msg = LoginViewController.validateLoginArgs(params);
 
                             if (msg != null) {
                               setState(() {
@@ -127,7 +128,7 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                             }
 
 
-                            final String? sign = await LoginController.loginAndRegister(
+                            final String? sign = await LoginViewController.loginAndRegister(
                               context,
                               isRegistrer ? Type.REGISTER : Type.LOGIN ,
                               params

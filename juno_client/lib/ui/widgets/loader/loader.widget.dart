@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:juno_client/config/app/app.tools.dart';
 
 class JnLogoLoder extends StatelessWidget {
+  const JnLogoLoder({super.key});
+
 
   @override
   Widget build(BuildContext context) => Container(

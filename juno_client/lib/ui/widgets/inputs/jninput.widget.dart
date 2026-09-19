@@ -8,7 +8,7 @@ class JnInput extends StatefulWidget implements JnInputs {
   final TextEditingController controller;
   final bool isOcultable;
   final String lblTextTittle;
-  JnInput({
+  const JnInput({super.key, 
     required this.controller,
     this.isOcultable = false,
     required this.lblTextTittle,
@@ -89,7 +89,7 @@ class JnSizedInput extends StatelessWidget implements JnInputs {
   final bool isOcultable;
  
 
-  JnSizedInput({
+  const JnSizedInput({super.key, 
     this.width = 0,
     this.height = 0,
     required this.controller,

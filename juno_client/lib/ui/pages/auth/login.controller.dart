@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:juno_client/adapters/AuthControllerAdapter.dart';
+import 'package:juno_client/domain/models/JnError.dart';
+import 'package:juno_client/infraestructure/adapters/AuthAdapter.dart';
 
-class LoginController  {
+class LoginViewController  {
 
-  static AuthControllerAdapter? _adapter;
+  static AuthAdapter? _adapter;
 
 
   static dynamic validateLoginArgs(Map<String, String> args) {
@@ -18,24 +19,28 @@ class LoginController  {
   }
 
 
-  static dynamic loginAndRegister(final BuildContext context ,final Type type, final Map<String, String> params ) async {
-    _adapter = AuthControllerAdapter();
-    //  tipo de la oparacion 
-    if (type.getType() == 'LOGIN') {
-      //respuesta del adaptador
+  static dynamic loginAndRegister(final BuildContext? context ,final Type type, final Map<String, String> params ) async {
+    try {
+      _adapter = AuthAdapter();
+      //  tipo de la oparacion 
+      if (type.getType() == 'LOGIN') {
+        //respuesta del adaptador
 
-      
-      final String? response = await _adapter!.login(
-        email: _getParam(params, 'email')!,
-        password: _getParam(params, 'password')!
-      );
+        
+        final JnError? response = await _adapter!.login(
+          email: _getParam(params, 'email')!,
+          password: _getParam(params, 'password')!
+        );
 
-      // Comprobacion e migracion
-      if (response == null) {
-        context.go('/home');
-      } else {
-        return 'No se ha podido Iniciar Session ';
+        // Comprobacion e migracion
+        if (response == null) {
+          context!.go('/home');
+        } else {
+          return response;
+        }
       }
+    } catch (ex) {
+      context!.go('/con-error');
     }
   }
 
@@ -50,6 +55,7 @@ class LoginController  {
         return entry.value;
       }
     }
+    return null;
   }
 }
 
@@ -57,9 +63,9 @@ class Type {
   String? type;
 
   Type({
-    this.type = null
+    this.type
   }) {
-    if (this.type != 'LOGIN' && this.type != 'REGISTER') {
+    if (type != 'LOGIN' && type != 'REGISTER') {
       throw Exception(' Class TYPE  : Tipo no permitudo');
     }
   }
@@ -67,5 +73,5 @@ class Type {
   static final LOGIN = Type(type: 'LOGIN') ;
   static final REGISTER = Type(type: 'REGISTER');
 
-  String? getType() => this.type!;
+  String? getType() => type!;
 }

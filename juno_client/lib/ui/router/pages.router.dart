@@ -3,6 +3,7 @@ import 'package:juno_client/config/app/app.tools.dart';
 import 'package:juno_client/ui/pages/auth/layout/loginDesktop.layout.dart';
 import 'package:juno_client/ui/pages/auth/layout/loginMovile.layout.dart';
 import 'package:juno_client/ui/pages/auth/login.page.dart';
+import 'package:juno_client/ui/pages/errors/error.view.dart';
 import 'package:juno_client/ui/pages/home/home.page.dart';
 import 'package:juno_client/ui/pages/home/view/homeDesktop.view.dart';
 import 'package:juno_client/ui/pages/home/view/homeMovile.view.dart';
@@ -10,6 +11,10 @@ import 'package:juno_client/ui/pages/home/view/homeMovile.view.dart';
 final GoRouter router = GoRouter(
     initialLocation: '/login',
     routes: [
+      GoRoute(
+        path: '/con-error',
+        builder: (context, state) => ErrorView(),
+      ),
       ShellRoute(
         builder: (context, state, child) => LoginViewPage(child: child,),
         routes: [

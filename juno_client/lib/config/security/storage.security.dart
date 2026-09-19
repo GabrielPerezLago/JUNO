@@ -1,9 +1,9 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class JunoTokenStorageRepository {
+class JnTokenStorageRepository {
   final _securityStorage = const FlutterSecureStorage();
 
-  JunoTokenStorageRepository();
+  JnTokenStorageRepository();
 
   void saveToken(final String token ) async {
     _securityStorage.write(key: 'token', value: token);

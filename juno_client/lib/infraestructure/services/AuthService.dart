@@ -1,34 +1,78 @@
 import 'dart:convert';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:juno_client/domain/models/Token.dart';
-import 'package:juno_client/domain/models/Usuario.dart';
+import 'package:juno_client/infraestructure/managers/token.manager.dart';
 import 'package:juno_client/infraestructure/repositories/AuthRepository.dart';
 
 class AuthService {
-  final _url_login = '/auth/signin';
+  static final _url_login = '/auth/signin';
+  static final _endpoint_registrer = '/auth/signup';
+  static final _endpoint_login_token  = '/auth/signin/token';
+
   final AuthRepository repository = AuthRepository();
-  
-  Future<Token> login(final String email, final String password) async {
 
+  Future<TokenRespManager> login(
+    final String email,
+    final String password,
+  ) async {
     try {
-      final resp = await repository.login(_url_login, email, password);
+      return repository
+          .login(_url_login, email, password)
+          .then((Response resp) {
+            if (resp.statusCode == 200) {
+              return TokenRespManager(
+                args: jsonDecode(resp.body),
+                type: TokenRespType.TOKEN,
+              );
+            } else if (resp.statusCode == 401) {
+              return TokenRespManager(
+                args: jsonDecode(resp.body),
+                type: TokenRespType.ERROR,
+              );
+            } else {
+              throw Exception("Error en el Login");
+            }
+          })
+          .catchError((ex) {
+            print(ex);
+            throw Exception(ex);
+          });
+    } catch (ex) {
+      print(ex);
+      rethrow;
+    }
+  }
 
+  Future<Token> registerService(final Map<String, dynamic> params) async {
+    try {
+      final response = await repository.register(_endpoint_registrer, params);
 
-      if (resp.statusCode == 200) {
-        // capturamos el body 
-        final Map<String, dynamic> responseJson = jsonDecode(resp.body);
-        return Token.fromJson(responseJson);
+      if (response.statusCode == 200) {
+        return _jsonToToken(response.body);
       } else {
         return Token.empty();
       }
-
-
-    } catch(ex) {
+    } catch (ex) {
       print(ex);
       rethrow;
-    } 
-  } 
+    }
+  }
 
+
+  Future<Token> loginByToken(final String refreshToken) async {
+      return repository.loginByToken(_endpoint_login_token, refreshToken)
+      .then((Response resp) {
+          if (resp.statusCode == 200) {
+              return _jsonToToken(resp.body);
+          } else {
+            throw Exception('Error al logearse con el token');
+          }
+      })
+      .catchError((ex) => throw Exception(ex));
+  }
+
+  Token _jsonToToken(String respBody) {
+    return Token.fromJson(jsonDecode(respBody));
+  }
 }

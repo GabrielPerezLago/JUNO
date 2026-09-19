@@ -9,6 +9,8 @@ import 'package:juno_client/ui/widgets/wizard/error.wizard.dart';
 
 // ignore: must_be_immutable
 class LoginDesktopLayout extends StatefulWidget {
+  const LoginDesktopLayout({super.key});
+
 
     @override
   State<StatefulWidget> createState() => _LoginDesktopState();
@@ -105,18 +107,18 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
                                 'email': emailController.text,
                                 'password': passwordController.text
                               };
-                              final String? msg = LoginController.validateLoginArgs(params);
+                              final String? msg = LoginViewController.validateLoginArgs(params);
 
                               if (msg != null){ 
                                 setState(() {
                                   isLoading = false ;
-                                  errMessage = msg!;
+                                  errMessage = msg;
                                 });
                                 return;
                               }
 
 
-                              final String? isError = await LoginController.loginAndRegister(
+                              final String? isError = await LoginViewController.loginAndRegister(
                                 context,
                                 isRegistrer ? Type.REGISTER : Type.LOGIN, 
                                 params

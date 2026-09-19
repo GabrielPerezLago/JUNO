@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
+export 'package:juno_client/config/app/app.tools.dart';
+
 final isDesktop = Platform.isMacOS || Platform.isWindows || Platform.isLinux;
 final isMovile = Platform.isAndroid || Platform.isIOS;
 

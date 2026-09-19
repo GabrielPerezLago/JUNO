@@ -24,7 +24,7 @@ abstract class JunoColorScheme {
     onPrimary: Color(0xff1F1F1F),
     secondary: const Color(0xFF34D399),
     onSecondary: Colors.black,
-    tertiary: const Color(0xff14B8A61), 
+    tertiary: const Color(0xff14b8a61), 
     surface: const Color(0xFF1D0074),
     onSurface: const Color(0xFFF8FAFC),
   );

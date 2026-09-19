@@ -27,6 +27,20 @@ class Usuario {
     this.idCentro
   });
 
+  Map<String, dynamic> toMap() {
+    return {
+      "id" : id!,
+      "nombre": nombre!,
+      "apellidos": apellidos!,
+      "dni": dni!,
+      "email": email!,
+      "telefono": telefono!,
+      "nacimiento": nacimiento!,
+      "rol": rol!.type,
+      "estado": estado!,
+      "idCentro": idCentro!,
+      "idAula": idAula!
+    };
+  }
 
-  
 }

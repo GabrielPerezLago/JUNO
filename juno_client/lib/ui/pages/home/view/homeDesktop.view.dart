@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HomeDesktopView extends StatefulWidget {
+  const HomeDesktopView({super.key});
+
 
   @override
   State<StatefulWidget> createState() => _HomeDesktopState();
