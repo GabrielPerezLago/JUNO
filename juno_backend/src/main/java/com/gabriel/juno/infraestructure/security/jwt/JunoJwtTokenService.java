@@ -163,7 +163,7 @@ public class JunoJwtTokenService
                         "nombre", sujeto.nombre(),
                         "apellidos", sujeto.apellidos() == null ? "" : sujeto.apellidos(),
                         "dni", sujeto.dni(),
-                        "telefono", sujeto.telefono(),
+                        "telefono", sujeto.telefono() == null ? "" : sujeto.telefono(),
                         "nacimiento", sujeto.nacimiento() == null ? "" : sujeto.nacimiento(),
                         "rol", sujeto.rol() == null ? "" : sujeto.rol(),
                         "estado", sujeto.estado() == null ?  "" : sujeto.estado(),

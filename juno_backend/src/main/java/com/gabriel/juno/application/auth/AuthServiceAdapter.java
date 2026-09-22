@@ -17,7 +17,7 @@ public class AuthServiceAdapter{
         this.authPort = authPort;
     }
 
-    public TokenDataContainerDTO singup(SujetoDTO sujeto) {
+    public TokenDataContainerDTO singup(final SujetoDTO sujeto) {
         if (sujeto.rol() == null) {
             return authPort.registerUsuario(sujeto.transferToUsuario());
         } else {
