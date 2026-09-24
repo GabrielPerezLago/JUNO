@@ -23,16 +23,15 @@ class AuthController {
 
   Future<bool> loginByToken(String refreshToken) async  {
     try {
-      final Token token = await authService.loginByToken(refreshToken)
-      .then((Token token) => token);
+      final Token? token = await authService.loginByToken(refreshToken);
 
       if (token == null) return false;
 
-      Future(() {
-        tokenStorage.reWriteRefreshToken(token.getRefreshToken);
-        tokenStorage.reWriteToken(token.getToken);
-      })
-      .catchError((ex) => throw Exception(ex));
+      // gaurdamos tokenms
+      tokenStorage.reWriteRefreshToken(token.getRefreshToken);
+      tokenStorage.reWriteToken(token.getToken);
+      
+      _decodeTokenAndGetUsuario(token.getToken);
 
       return true;
 
@@ -72,15 +71,26 @@ class AuthController {
     }
   }
 
-  Future<bool> register(Map<String, dynamic> params) async {
-    Token token = await authService.registerService(params);
+  Future<JnError?> register(Map<String, dynamic> params) async {
+    final tokenOrError = await authService.registerService(params)
+    .then((TokenRespManager tokenManager) {
+      if (tokenManager.valueOf(TokenRespType.TOKEN)) {
+        return tokenManager.TOKEN;
+      } else {
+        return tokenManager.ERROR;
+      }
+    });
 
-    tokenStorage.reWriteRefreshToken(token.getRefreshToken);
-    tokenStorage.reWriteToken(token.getToken);
+    if (tokenOrError is JnError) return tokenOrError;
 
-    _decodeTokenAndGetUsuario(token.getToken, saveInSession: true);
+    tokenOrError as Token;
 
-    return session.email != null;
+    tokenStorage.reWriteRefreshToken(tokenOrError.getRefreshToken);
+    tokenStorage.reWriteToken(tokenOrError.getToken);
+
+    _decodeTokenAndGetUsuario(tokenOrError.getToken, saveInSession: true);
+
+    return null;
   }
 
   /// @params Token
@@ -95,7 +105,7 @@ class AuthController {
     Map<String, dynamic> tokenDecoded = JwtDecoder.decode(token);
 
     print("""
-      TOKEN DATE $tokenDecoded['nacimiento']
+      TOKEN DATE $tokenDecoded
     """);
 
     final usuario = Usuario(

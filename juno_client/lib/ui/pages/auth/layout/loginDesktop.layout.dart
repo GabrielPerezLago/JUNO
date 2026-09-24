@@ -5,6 +5,7 @@ import 'package:juno_client/config/app/app.tools.dart';
 import 'package:juno_client/ui/pages/auth/login.controller.dart';
 import 'package:juno_client/ui/widgets/inputs/jninput.widget.dart';
 import 'package:juno_client/ui/widgets/loader/loader.widget.dart';
+import 'package:juno_client/ui/widgets/scafolds/basic_scaffold.widget.dart';
 import 'package:juno_client/ui/widgets/wizard/error.wizard.dart';
 
 // ignore: must_be_immutable
@@ -33,15 +34,16 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
   Widget build(BuildContext context) {
   
 
-    return isLoading ? JnLogoLoder() : Scaffold(
+    return isLoading ? JnLogoLoder() : JnBasicScaffold(
+    context: context,
     backgroundColor: junoColorScheme(context).primaryFixed,
-    body: Center(
+    child: Center(
       child: SafeArea(child: SingleChildScrollView(
         child: Center(
           child: Container( // Contenedor priencipal 
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: isDark(context) ? Colors.black87 : Colors.white
+              color: isDark(context) ? Colors.black : Colors.white
             ),
             padding: EdgeInsets.all(40),
             width: _containerLoginSize(),
@@ -74,20 +76,22 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
                 spacing: isRegistrer ? 10 : 20,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if(isRegistrer) JnInput(controller: nombreController, lblTextTittle: 'Nombre'),
+                  if(isRegistrer) JnInput(controller: nombreController, lblTextTittle: 'Nombre Completo Con Espacios', borderColor: borderColor,),
                   JnSizedInput(
                     width: _getInputSize(),
                     controller: emailController, 
-                    lblTextTittle: 'Email'
+                    lblTextTittle: 'Email',
+                    borderColor: borderColor
                   ),
                   JnSizedInput(
                     width: _getInputSize(),
                     controller: passwordController, 
                     lblTextTittle: 'Contraseña',
                     isOcultable: true,
+                    borderColor: borderColor,
                   ),
-                  if(isRegistrer) JnInput(controller: repeatPasswordController, lblTextTittle: 'Repetir Contraseña', isOcultable: true,),
-                  if (isRegistrer) JnInput(controller: dniController, lblTextTittle: 'DNI/NIF'),
+                  if(isRegistrer) JnInput(controller: repeatPasswordController, lblTextTittle: 'Repetir Contraseña', isOcultable: true, borderColor: borderColor,),
+                  if (isRegistrer) JnInput(controller: dniController, lblTextTittle: 'DNI/NIF', borderColor: borderColor,),
                   if(errMessage != null) Text(errMessage! , style: TextStyle(color: junoColorScheme(context).error, fontSize: width(context) * 0.01)),
                   SizedBox(
                     width: width(context) * 0.3,
@@ -103,10 +107,21 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
                               setState(() {
                                 isLoading = true;
                               });
-                              final params = { 
+
+
+                              final params = isRegistrer
+                              ? {
+                                'nombre' : nombreController.text,
+                                'email': emailController.text,
+                                'password': passwordController.text,
+                                'repeatPassword': repeatPasswordController.text,
+                                'dni': dniController.text
+                              }
+                              : { 
                                 'email': emailController.text,
                                 'password': passwordController.text
                               };
+
                               final String? msg = LoginViewController.validateLoginArgs(params);
 
                               if (msg != null){ 
@@ -175,10 +190,10 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
   
   }
 
+  Color get borderColor => isDark(context) ? Colors.white60 : Colors.black54;
   double _containerLoginSize() => width(context) == 800 ? width(context) * 0.8 : width(context) * 0.35 ;
   String _initSessionString() => isRegistrer ? 'Registrate' : 'Iniciar Sesión';
   SizedBox _spacingSize() => SizedBox(height: isRegistrer ? height(context) *  0.1 : height(context) * 0.001,);
   double _getInputSize() => width(context) * 0.5;
 
-  
 }

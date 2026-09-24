@@ -24,11 +24,29 @@ dependencies:
   getwidget: ^7.0.2
   window_manager: ^0.5.2
   intl: ^0.20.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
+flutter_launcher_icons:
+  image_path: "assets/images/logo.png"
+  
+  android: true
+  ios: true
+  windows:
+    generate: true
+    image_path: "assets/images/logo.png"
+    icon_size: 48 # Tamaño recomendado
+  macos:
+    generate: true
+    image_path: "assets/images/logo.png"
+  linux:
+    generate: true
+    image_path: "assets/images/logo.png"
+  
 
 flutter:
 
@@ -76,3 +94,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+scripts:
+  pixel: flutter run -d 
+  windows: flutter run -d windows

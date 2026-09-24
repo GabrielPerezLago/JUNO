@@ -8,8 +8,8 @@ import 'package:juno_client/ui/pages/home/home.page.dart';
 import 'package:juno_client/ui/pages/home/view/homeDesktop.view.dart';
 import 'package:juno_client/ui/pages/home/view/homeMovile.view.dart';
 
-final GoRouter router = GoRouter(
-    initialLocation: '/login',
+GoRouter router({required String initialDirection}) => GoRouter(
+    initialLocation: initialDirection,
     routes: [
       GoRoute(
         path: '/con-error',

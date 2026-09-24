@@ -8,10 +8,14 @@ class JnInput extends StatefulWidget implements JnInputs {
   final TextEditingController controller;
   final bool isOcultable;
   final String lblTextTittle;
-  const JnInput({super.key, 
+  final Color borderColor;
+  
+  const JnInput({
+    super.key,
     required this.controller,
     this.isOcultable = false,
     required this.lblTextTittle,
+    this.borderColor = Colors.black 
   });
   
   @override
@@ -45,7 +49,6 @@ class _JnInputState extends State<JnInput> {
       labelStyle: _lblDecoration(),
       enabledBorder: _jnIputBorder(),
       focusedBorder: _jnIputBorder(),
-
       suffixIcon: _getSuffixIconsPassword(() {
         setState(() {
           _hidden = !_hidden;
@@ -55,14 +58,15 @@ class _JnInputState extends State<JnInput> {
   );
 
 
-
+  
 
   OutlineInputBorder _jnIputBorder() => OutlineInputBorder(
     borderRadius: BorderRadius.circular(50),
     borderSide: BorderSide(
+      color: widget.borderColor,
       width: width(context) * 0.001
     ),
-    gapPadding: 20
+    gapPadding: 20,
   );
 
   Widget? _getSuffixIconsPassword(VoidCallback onClick) => widget.isOcultable ? 
@@ -87,7 +91,7 @@ class JnSizedInput extends StatelessWidget implements JnInputs {
   final TextEditingController controller;
   final String lblTextTittle;
   final bool isOcultable;
- 
+  final Color borderColor;
 
   const JnSizedInput({super.key, 
     this.width = 0,
@@ -95,7 +99,7 @@ class JnSizedInput extends StatelessWidget implements JnInputs {
     required this.controller,
     required this.lblTextTittle,
     this.isOcultable = false,
-
+    this.borderColor = Colors.black
   });
 
 
@@ -107,6 +111,9 @@ class JnSizedInput extends StatelessWidget implements JnInputs {
       controller: controller, 
       lblTextTittle: lblTextTittle,
       isOcultable: isOcultable,
+      borderColor: borderColor,
     ),
   );
+
+
 }

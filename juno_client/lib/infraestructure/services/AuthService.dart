@@ -44,15 +44,19 @@ class AuthService {
     }
   }
 
-  Future<Token> registerService(final Map<String, dynamic> params) async {
+  Future<TokenRespManager> registerService(final Map<String, dynamic> params) async {
     try {
-      final response = await repository.register(_endpoint_registrer, params);
-
-      if (response.statusCode == 200) {
-        return _jsonToToken(response.body);
-      } else {
-        return Token.empty();
-      }
+      return await repository
+      .register(_endpoint_registrer, params)
+      .then((Response resp) {
+        if (resp.statusCode == 200) {
+            return TokenRespManager(args: jsonDecode(resp.body), type: TokenRespType.TOKEN);
+        } else if (resp.statusCode == 401) {
+          return TokenRespManager(args: jsonDecode(resp.body), type: TokenRespType.ERROR);
+        } else {
+          throw Exception("Error al registrar el usuario");
+        }
+      });
     } catch (ex) {
       print(ex);
       rethrow;
@@ -61,7 +65,7 @@ class AuthService {
 
 
   Future<Token> loginByToken(final String refreshToken) async {
-      return repository.loginByToken(_endpoint_login_token, refreshToken)
+      return await repository.loginByToken(_endpoint_login_token, refreshToken)
       .then((Response resp) {
           if (resp.statusCode == 200) {
               return _jsonToToken(resp.body);

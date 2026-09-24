@@ -10,11 +10,9 @@ class AuthRepository extends HttpRespository {
     });
   }
 
-  Future<Response> register(
-    final String endpoint,
-    final Map<String, dynamic> params,
-  ) async {
-    return await super.POST(endpoint).BODY(params);
+  Future<Response> register(final String endpoint,final Map<String, dynamic> params,) async {
+    return await super.POST(endpoint)
+    .BODY(params);
   }
 
   Future<Response> loginByToken(final String endpoint, String refreshToken) async {

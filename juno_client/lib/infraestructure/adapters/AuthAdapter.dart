@@ -1,7 +1,6 @@
 import 'package:juno_client/config/security/storage.security.dart';
 import 'package:juno_client/domain/seession/SESSION.dart';
 import 'package:juno_client/domain/models/JnError.dart';
-import 'package:juno_client/domain/models/Usuario.dart';
 import 'package:juno_client/infraestructure/controllers/AuthController.dart';
 import 'package:juno_client/infraestructure/services/AuthService.dart';
 
@@ -19,9 +18,9 @@ class AuthAdapter {
     );
   }
 
-  Future<JnError?> login({String email = '', String password = ''}) async {
+  Future<String?> login({String email = '', String password = ''}) async {
     try {
-      JnError? response = await _port?.login(email, password);
+      JnError? response = await _port!.login(email, password);
 
       if (response == null) {
         return null;
@@ -31,29 +30,34 @@ class AuthAdapter {
         return null;
       }
 
-      return response;
+      return response.message;
     } catch (ex) {
       print(ex);
-      throw Exception(ex);
+      rethrow;
     }
   }
 
-  Future<String?> register(final Usuario user) async {
-    String? errMessage;
-    bool? response = await _port?.register(user.toMap());
+  Future<String?> register(final Map<String, dynamic> params) async {
+    try {
+        String? errMessage;
+        JnError? response = await _port!.register(params);
 
-    if (response!) {
-      return null;
-    } else {
-      errMessage = 'Algún campo no es valido';
+        if (response == null) {
+          return null;
+        } else {
+          errMessage = response.message;
+        }
+
+        return errMessage;
+    } catch (ex) {
+      print(ex);
+      rethrow;
     }
-
-    return errMessage;
   }
 
   Future<bool> loginByToken(final String refreshToken) async {
     try {
-      return await _port?.loginByToken(refreshToken)
+      return await _port!.loginByToken(refreshToken)
       .then((bool isLoading) => isLoading);
     } catch (ex) {
       print(ex);

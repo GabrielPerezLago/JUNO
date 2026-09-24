@@ -1,15 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:juno_client/infraestructure/adapters/AuthAdapter.dart';
 import 'package:juno_client/config/app/app.tools.dart';
-import 'package:juno_client/config/theme/schemes/input.decoration.dart';
-import 'package:juno_client/config/theme/text/text.sheme.dart';
 import 'package:juno_client/ui/pages/auth/login.controller.dart';
 import 'package:juno_client/ui/widgets/inputs/jninput.widget.dart';
 import 'package:juno_client/ui/widgets/loader/loader.widget.dart';
+import 'package:juno_client/ui/widgets/scafolds/basic_scaffold.widget.dart';
 import 'package:juno_client/ui/widgets/wizard/error.wizard.dart';
 
 class LoginMovileLayout extends StatefulWidget {
@@ -26,21 +21,20 @@ class _LoginMovileState extends State<LoginMovileLayout> {
     bool isRegistrer = false;
     String? errString;
 
-    final emailImpController = TextEditingController();
-    final passwordImpController = TextEditingController();
-    final nombreImpController = TextEditingController();
-    final dniImpController = TextEditingController();
-    final repeatPasswordImpController = TextEditingController();
-
-    
-
+    final nombreController = TextEditingController();
+    final emailController = TextEditingController();
+    final dniController = TextEditingController();
+    final passwordController = TextEditingController();
+    final repeatPasswordController = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
     
-    return isLoading ? JnLogoLoder() :  Scaffold(
-    body: SafeArea(
+    return isLoading ? JnLogoLoder() :  JnBasicScaffold(
+    context: context,
+    backGround: false,
+    child: SafeArea(
       child: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Column(
@@ -83,20 +77,20 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                         ),),
                         
                         if (isRegistrer) JnInput(controller: 
-                          nombreImpController, 
+                          nombreController, 
                           lblTextTittle: 'Nombre Completo',
                         ),
                         JnInput(
-                          controller: emailImpController, 
+                          controller: emailController, 
                           lblTextTittle: 'Email',
                         ),
                         JnInput(
-                          controller: passwordImpController, 
+                          controller: passwordController, 
                           lblTextTittle: 'Contraseña',
                           isOcultable: true,
                         ),
-                        if (isRegistrer) JnInput(controller: repeatPasswordImpController, lblTextTittle: 'Repetir Contraseña'),
-                        if (isRegistrer) JnInput(controller: dniImpController, lblTextTittle: 'DNI'),
+                        if (isRegistrer) JnInput(controller: repeatPasswordController, lblTextTittle: 'Repetir Contraseña'),
+                        if (isRegistrer) JnInput(controller: dniController, lblTextTittle: 'DNI'),
 
                         if(errString != null && errString!.isNotEmpty) Text(errString!, style: TextStyle( fontSize: width(context) * 0.01, color: junoColorScheme(context).error)),
 
@@ -112,11 +106,18 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                               isLoading = true;
                             });
 
-                            final params = {
-                              'email': emailImpController.text,
-                              'password': passwordImpController.text
-                            };
-
+                            final params = isRegistrer
+                              ? {
+                                'nombre' : nombreController.text,
+                                'email': emailController.text,
+                                'password': passwordController.text,
+                                'repeatPassword': repeatPasswordController.text,
+                                'dni': dniController.text
+                              }
+                              : { 
+                                'email': emailController.text,
+                                'password': passwordController.text
+                              };
                             final msg = LoginViewController.validateLoginArgs(params);
 
                             if (msg != null) {

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:juno_client/domain/types/UserType.dart';
 
 class Usuario {
