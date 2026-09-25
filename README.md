@@ -3,7 +3,7 @@
      
 </h1>
 <div align="center" style="display: flex; justify-content: center;">
-<img src="./Docs/images/juno.png" width="200" alt="Juno Logo" />
+<img src="./Docs/images/juno.png" width="100" alt="Juno Logo" />
 </div>
 
 ## Introduccion
