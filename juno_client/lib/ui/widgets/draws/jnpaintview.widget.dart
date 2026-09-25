@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:juno_client/config/app/app.tools.dart';
 
 class JnPaintView extends StatelessWidget {
+  
+  const JnPaintView({super.key});
+
 
   @override
   Widget build(BuildContext context) => CustomPaint(
@@ -30,6 +33,8 @@ class _JnBoxPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
+    var sz = w/h;
+    print(sz);
     paint.color = junoColorScheme(context).primaryFixed;
 
     paint.strokeWidth = 50;

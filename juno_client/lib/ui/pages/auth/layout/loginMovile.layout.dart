@@ -79,18 +79,21 @@ class _LoginMovileState extends State<LoginMovileLayout> {
                         if (isRegistrer) JnInput(controller: 
                           nombreController, 
                           lblTextTittle: 'Nombre Completo',
+                          borderColor: borderColorByTheme,
                         ),
                         JnInput(
                           controller: emailController, 
                           lblTextTittle: 'Email',
+                          borderColor: borderColorByTheme,
                         ),
                         JnInput(
                           controller: passwordController, 
                           lblTextTittle: 'Contraseña',
                           isOcultable: true,
+                          borderColor: borderColorByTheme,
                         ),
-                        if (isRegistrer) JnInput(controller: repeatPasswordController, lblTextTittle: 'Repetir Contraseña'),
-                        if (isRegistrer) JnInput(controller: dniController, lblTextTittle: 'DNI'),
+                        if (isRegistrer) JnInput(controller: repeatPasswordController, lblTextTittle: 'Repetir Contraseña', borderColor: borderColorByTheme,),
+                        if (isRegistrer) JnInput(controller: dniController, lblTextTittle: 'DNI', borderColor: borderColorByTheme),
 
                         if(errString != null && errString!.isNotEmpty) Text(errString!, style: TextStyle( fontSize: width(context) * 0.01, color: junoColorScheme(context).error)),
 
@@ -171,6 +174,7 @@ class _LoginMovileState extends State<LoginMovileLayout> {
   ));
   }
 
+  Color get borderColorByTheme => isDark(context) ? Colors.white60 : Colors.black87;
   SizedBox _getSpaceSize() => SizedBox( height: height(context) * _getSpacingNumberSize(),);
   double _getSpacingNumberSize() => isRegistrer ? 0.05 : 0.1;
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:juno_client/domain/interfaces/types.implement.dart';
 import 'package:juno_client/infraestructure/adapters/AuthAdapter.dart';
+import 'package:juno_client/ui/filters/permission.filter.dart';
 
 class LoginViewController  {
 
@@ -32,7 +33,7 @@ class LoginViewController  {
   }
 
 
-  static dynamic loginAndRegister(final BuildContext? context ,final Type type, final Map<String, String> params ) async {
+  static dynamic loginAndRegister(final BuildContext context ,final Type type, final Map<String, String> params ) async {
     try {
       _adapter = AuthAdapter();
       //  tipo de la oparacion 
@@ -70,13 +71,10 @@ class LoginViewController  {
             'dni': params['dni']
           };
 
-          print(paramsMap);
-
-
           message = await _adapter!.register(paramsMap);
 
           if (message == null) { 
-            context?.go('/home'); 
+            PermissionEnrouter.go(context, '/home'); 
           } else {
             return message;
           }

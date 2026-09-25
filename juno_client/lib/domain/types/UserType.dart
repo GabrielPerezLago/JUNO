@@ -1,6 +1,8 @@
 
-class UserType {
-  final String type;
+import 'package:juno_client/domain/interfaces/types.implement.dart';
+
+class UserType implements TypeManual{
+  late final String _type;
 
   static final List<String> _types = [
     'USUARIO',
@@ -9,20 +11,29 @@ class UserType {
     'ADMINISTRACION'
   ];
 
-  UserType({
-    required this.type
-  }) {
+  UserType(final String type) {
 
     if (!_types.contains(type)) {
       throw Exception('Tipo de usuario no valido');
     }
+    _type = type;
   }
 
 
-  static final USUARIO = UserType(type: 'USUARIO');
+  static final USUARIO = UserType('USUARIO');
   
   
   static UserType getUserTypeByParam(String type) {
-    return UserType(type: type.toUpperCase());
+    return UserType(type.toUpperCase());
+  }
+
+  @override
+  type() {
+    return _type;
+  }
+
+  @override
+  bool valueOf(TypeManual type) {
+    return _type == type.type();
   }
 }

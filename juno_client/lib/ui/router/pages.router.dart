@@ -27,9 +27,13 @@ GoRouter router({required String initialDirection}) => GoRouter(
       ShellRoute(
         builder: (context, state, child) => HomePage(child: child),
         routes: [
-          GoRoute(
-            path: '/home',
-            builder: (context, state) => isDesktop ? HomeDesktopView() : HomeMovileView(), 
+          ShellRoute(
+            builder: (context, state, child) =>  HomeDesktopView(layout: child),
+            routes: [
+              GoRoute(path: '/home-usuario') ,
+              GoRoute(path: '/home-direccion'),
+              GoRoute(path: '/home-docente')
+            ]
           )
         ]
       ),

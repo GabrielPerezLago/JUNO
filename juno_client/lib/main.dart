@@ -15,10 +15,10 @@ void main() async {
   } catch (ex) {
     print( 'Error Window Cofiguration : $ex');
   }
-  print('Entrando al loginByToken');
-  final bool isLoging = await InitTokenController.loginByToken();
 
-  runApp(JunoClient(isLoging));
+  // final bool isLoging = await InitTokenController.loginByToken();
+
+  runApp(JunoClient(true));
 
 }
 // ignore: must_be_immutable

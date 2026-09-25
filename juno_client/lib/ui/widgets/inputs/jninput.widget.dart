@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:juno_client/config/app/app.tools.dart';
 
 abstract interface class JnInputs {}
@@ -33,6 +33,7 @@ class _JnInputState extends State<JnInput> {
 
   @override
   void initState()  {
+    super.initState();
     if (widget.isOcultable) {
       setState(() {
         _hidden = true;
@@ -55,6 +56,18 @@ class _JnInputState extends State<JnInput> {
         });
       })
     ),
+  )
+  .animate()
+  .fadeIn(
+    duration: 2.seconds,
+    curve: Curves.easeInSine
+  )
+  .scale(
+    alignment: Alignment.center,
+    begin: Offset(0.0, 0.0),
+    end: Offset(1, 1),
+    duration: 2.seconds,
+    curve: Curves.easeOutBack
   );
 
 

@@ -24,6 +24,7 @@ dependencies:
   getwidget: ^7.0.2
   window_manager: ^0.5.2
   intl: ^0.20.3
+  flutter_animate: ^4.5.2
 
 dev_dependencies:
   flutter_test:

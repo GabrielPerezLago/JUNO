@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:juno_client/config/app/app.tools.dart';
@@ -66,6 +67,10 @@ class _LoginDesktopState extends State<LoginDesktopLayout> {
                       fontSize: width(context) * 0.03,
                       color: junoColorScheme(context).secondary
                     ),
+                  ).animate()
+                  .fadeIn(
+                    duration: 2000.ms,
+                    curve: Curves.easeIn
                   ),
                 ],
               ),
